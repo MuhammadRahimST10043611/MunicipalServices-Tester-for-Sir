@@ -391,9 +391,7 @@
             // Initial preview update
             updatePreview();
 
-            // Form submission handling - FIXED VERSION
             form.addEventListener('submit', function(e) {
-                // If already submitting, prevent double submission
                 if (isSubmitting) {
                     e.preventDefault();
                     return false;
@@ -439,10 +437,6 @@
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating Event...';
                 submitBtn.disabled = true;
 
-                // Allow the form to submit naturally
-                // The form will submit and page will redirect
-
-                // Failsafe: Re-enable button after 10 seconds ONLY if still on same page
                 setTimeout(function() {
                     // Check if we're still on the same page (not redirected)
                     if (document.getElementById('submitBtn') && submitBtn.disabled) {
@@ -466,7 +460,6 @@
                     }
                 }, 10000);
 
-                // Don't prevent default - let the form submit normally
             });
 
             // Alternative: Handle button click separately

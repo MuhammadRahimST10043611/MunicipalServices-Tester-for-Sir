@@ -12,11 +12,9 @@ namespace MunicipalServices.Attributes
 
             if (!userId.HasValue)
             {
-                // User is not logged in, redirect to login
                 var controller = context.RouteData.Values["controller"]?.ToString();
                 var action = context.RouteData.Values["action"]?.ToString();
 
-                // Store the return URL
                 var returnUrl = $"/{controller}/{action}";
                 if (context.HttpContext.Request.QueryString.HasValue)
                 {

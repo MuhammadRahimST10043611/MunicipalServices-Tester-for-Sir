@@ -56,7 +56,7 @@ namespace MunicipalServices.Data
                 {
                     Id = 1,
                     Name = "Admin",
-                    Password = "AdminPass123!", // In production, this should be hashed
+                    Password = "AdminPass123!",
                     IsAdmin = true,
                     CreatedAt = DateTime.UtcNow
                 }

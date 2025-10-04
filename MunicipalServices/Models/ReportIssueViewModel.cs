@@ -17,7 +17,6 @@ namespace MunicipalServices.Models
         [DataType(DataType.MultilineText)]
         public string Description { get; set; } = "";
 
-        // CHANGED: Use custom collection instead of ICollection<IFormFile>
         [Display(Name = "Attach Files (Images/Documents)")]
         public CustomCollection<IFormFile>? AttachedFiles { get; set; }
 
@@ -48,7 +47,6 @@ namespace MunicipalServices.Models
 
         public CustomLinkedList<string> Categories => _categories;
 
-        // CHANGED: Return custom array instead of string[]
         public CustomArray<string> GetCategoriesArray()
         {
             var array = new CustomArray<string>();

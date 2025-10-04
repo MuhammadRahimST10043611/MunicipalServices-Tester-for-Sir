@@ -16,7 +16,7 @@ namespace MunicipalServices.Controllers
         [HttpGet]
         public IActionResult Login(string? returnUrl = null)
         {
-            // Redirect if already logged in
+            // Redirect if already the user is logged in
             if (HttpContext.Session.GetInt32("UserId").HasValue)
             {
                 var isAdmin = HttpContext.Session.GetString("IsAdmin") == "true";

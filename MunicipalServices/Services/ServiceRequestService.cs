@@ -32,7 +32,6 @@ namespace MunicipalServices.Services
         {
             var userReports = new CustomLinkedList<ServiceRequest>();
 
-            // Always include the 2 sample reports (ID 1 and 2)
             foreach (var report in _serviceRequests)
             {
                 if (report.Id <= 2 || report.UserId == userId)

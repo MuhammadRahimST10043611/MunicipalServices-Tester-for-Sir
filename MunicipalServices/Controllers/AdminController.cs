@@ -242,9 +242,6 @@ namespace MunicipalServices.Controllers
                 // Update status
                 request.Status = status;
 
-                // Here you would normally save to database
-                // Since we're using in-memory storage, the status is already updated
-
                 // Return JSON response for AJAX request
                 return Json(new
                 {

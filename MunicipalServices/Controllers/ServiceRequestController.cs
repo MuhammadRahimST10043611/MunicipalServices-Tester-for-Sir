@@ -164,10 +164,8 @@ namespace MunicipalServices.Controllers
             // Get current user ID
             var userId = HttpContext.Session.GetInt32("UserId") ?? 0;
 
-            // CHANGED: Get only user-specific reports (includes sample reports)
             var reports = _serviceRequestService.GetUserServiceRequests(userId);
 
-            // Convert to List for View compatibility (Razor views can handle both)
             var reportsList = new List<ServiceRequest>();
             foreach (var report in reports)
             {
