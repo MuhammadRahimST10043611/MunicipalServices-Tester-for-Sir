@@ -1,0 +1,58 @@
+﻿@{
+    ViewData["Title"] = "Report Submitted Successfully";
+    var requestId = ViewBag.RequestId;
+}
+
+<div class="text-center">
+    <div class="mb-4">
+        <i class="fas fa-check-circle fa-5x text-success mb-3"></i>
+        <h2 class="text-success">Report Submitted Successfully!</h2>
+        <p class="lead">Thank you for helping us improve your community</p>
+    </div>
+
+    @if (requestId != null)
+    {
+        <div class="alert alert-success">
+            <h5><i class="fas fa-ticket-alt me-2"></i>Your Reference ID</h5>
+            <h3 class="mb-0">#@requestId</h3>
+            <p class="mb-0 mt-2">Please save this reference number for tracking your request</p>
+        </div>
+    }
+
+    <div class="row mt-4">
+        <div class="col-md-6 mx-auto">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5><i class="fas fa-info-circle me-2 text-primary"></i>What happens next?</h5>
+                    <ul class="list-unstyled mt-3">
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Your report has been logged in our system
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-eye text-primary me-2"></i>
+                            Our team will review your submission
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-tools text-warning me-2"></i>
+                            Work will be scheduled based on priority
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-bell text-info me-2"></i>
+                            You'll receive updates on progress
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a asp-controller="ServiceRequest" asp-action="ReportIssue" class="btn btn-primary me-3">
+            <i class="fas fa-plus me-2"></i>Report Another Issue
+        </a>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary">
+            <i class="fas fa-home me-2"></i>Back to Home
+        </a>
+    </div>
+</div>

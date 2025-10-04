@@ -1,0 +1,135 @@
+﻿@model MunicipalServices.Models.RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="card border-0 shadow-lg">
+            <div class="card-header bg-success text-white text-center">
+                <h4 class="mb-0">
+                    <i class="fas fa-user-plus me-2"></i>
+                    Create Account
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger">
+                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            <div>@error.ErrorMessage</div>
+                        }
+                    </div>
+                }
+
+                <form asp-action="Register" method="post" id="registerForm">
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label fw-bold">
+                            <i class="fas fa-user me-2 text-success"></i>Full Name
+                        </label>
+                        <input asp-for="Name" class="form-control form-control-lg"
+                               placeholder="Enter your full name" required autofocus
+                               id="nameInput" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                        <div class="form-text">
+                            <i class="fas fa-info-circle me-1"></i>
+                            This will be used as your login name.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label fw-bold">
+                            <i class="fas fa-lock me-2 text-success"></i>Password
+                        </label>
+                        <input asp-for="Password" type="password" class="form-control form-control-lg"
+                               placeholder="Enter a secure password" required
+                               id="passwordInput" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                        <div class="form-text">
+                            <i class="fas fa-shield-alt me-1"></i>
+                            Minimum 6 characters required.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ConfirmPassword" class="form-label fw-bold">
+                            <i class="fas fa-lock me-2 text-success"></i>Confirm Password
+                        </label>
+                        <input asp-for="ConfirmPassword" type="password" class="form-control form-control-lg"
+                               placeholder="Confirm your password" required
+                               id="confirmPasswordInput" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success btn-lg" id="submitBtn">
+                            <i class="fas fa-user-plus me-2"></i>Create Account
+                        </button>
+                    </div>
+                </form>
+
+                <hr class="my-4">
+
+                <div class="text-center">
+                    <p class="mb-2">Already have an account?</p>
+                    <a asp-action="Login" class="btn btn-outline-success">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login Here
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-3">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-link">
+                <i class="fas fa-arrow-left me-2"></i>Back to Home
+            </a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const nameInput = document.getElementById('nameInput');
+            const passwordInput = document.getElementById('passwordInput');
+            const confirmPasswordInput = document.getElementById('confirmPasswordInput');
+            const submitBtn = document.getElementById('submitBtn');
+
+            function validateForm() {
+                const name = nameInput.value.trim();
+                const password = passwordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
+
+                // Check if all fields meet requirements
+                const nameValid = name.length >= 2 && name.length <= 100;
+                const passwordValid = password.length >= 6 && password.length <= 255;
+                const passwordsMatch = password === confirmPassword && confirmPassword.length > 0;
+
+                const isValid = nameValid && passwordValid && passwordsMatch;
+
+                // Enable/disable submit button
+                submitBtn.disabled = !isValid;
+
+                return isValid;
+            }
+
+            // Add event listeners to all inputs
+            nameInput.addEventListener('input', validateForm);
+            nameInput.addEventListener('keyup', validateForm);
+            passwordInput.addEventListener('input', validateForm);
+            passwordInput.addEventListener('keyup', validateForm);
+            confirmPasswordInput.addEventListener('input', validateForm);
+            confirmPasswordInput.addEventListener('keyup', validateForm);
+
+            // Initial validation
+            validateForm();
+        });
+    </script>
+}

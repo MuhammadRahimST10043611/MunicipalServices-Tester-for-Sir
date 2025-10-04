@@ -1,0 +1,136 @@
+﻿@{
+    ViewData["Title"] = "Local Events & Announcements";
+}
+
+<div class="coming-soon-container">
+    <div class="coming-soon-content text-center">
+        <!-- Animated Icon -->
+        <div class="coming-soon-icon mb-4">
+            <i class="fas fa-calendar-alt fa-6x text-primary"></i>
+            <div class="icon-decoration">
+                <i class="fas fa-sparkles sparkle-1"></i>
+                <i class="fas fa-sparkles sparkle-2"></i>
+                <i class="fas fa-sparkles sparkle-3"></i>
+            </div>
+        </div>
+
+        <!-- Main Title -->
+        <h1 class="coming-soon-title mb-3">
+            Local Events & Announcements
+        </h1>
+
+        <!-- Coming Soon Badge -->
+        <div class="coming-soon-badge mb-4">
+            <i class="fas fa-clock me-2"></i>
+            Coming Soon
+        </div>
+
+        <!-- Description -->
+        <div class="coming-soon-description mb-5">
+            <p class="lead mb-4">
+                We're building an amazing platform to keep you connected with your community!
+            </p>
+            <p class="text-muted">
+                Soon you'll be able to discover local events, municipal announcements,
+                community meetings, and important updates all in one convenient location.
+            </p>
+        </div>
+
+        <!-- Features Preview -->
+        <div class="features-preview mb-5">
+            <div class="row g-4 justify-content-center">
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-calendar-check text-success"></i>
+                        </div>
+                        <h6 class="feature-title">Community Events</h6>
+                        <p class="feature-text">Local festivals, workshops, and community gatherings</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-bullhorn text-warning"></i>
+                        </div>
+                        <h6 class="feature-title">Official Announcements</h6>
+                        <p class="feature-text">Municipal updates and important notices</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-users text-info"></i>
+                        </div>
+                        <h6 class="feature-title">Community Meetings</h6>
+                        <p class="feature-text">Town halls and public consultation sessions</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="progress-section mb-5">
+            <div class="progress-info mb-3">
+                <h6 class="mb-2">Development Progress</h6>
+                <div class="progress-stats">
+                    <span class="progress-label">Planning & Design</span>
+                    <span class="progress-percentage">75%</span>
+                </div>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" style="width: 75%"></div>
+                <div class="progress-glow" style="width: 75%"></div>
+            </div>
+            <small class="text-muted mt-2 d-block">
+                Expected completion: Q2 2025
+            </small>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="coming-soon-actions">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-lg me-3">
+                <i class="fas fa-home me-2"></i>
+                Back to Home
+            </a>
+            <a asp-controller="ServiceRequest" asp-action="ReportIssue" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-plus me-2"></i>
+                Report an Issue
+            </a>
+        </div>
+
+        <!-- Notification Signup -->
+        <div class="notification-signup mt-5">
+            <div class="notification-card">
+                <h6 class="mb-3">
+                    <i class="fas fa-bell me-2"></i>
+                    Stay Updated
+                </h6>
+                <p class="text-muted mb-3">
+                    We'll notify you when this feature becomes available!
+                </p>
+                <div class="input-group">
+                    <input type="email" class="form-control" placeholder="Enter your email address" disabled>
+                    <button class="btn btn-primary" type="button" disabled>
+                        <i class="fas fa-envelope me-2"></i>Notify Me
+                    </button>
+                </div>
+                <small class="text-muted mt-2 d-block">
+                    Email notifications coming soon as well!
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Background Animation -->
+    <div class="coming-soon-background">
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="floating-shape shape-3"></div>
+        <div class="floating-shape shape-4"></div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/pages/coming-soon.js" asp-append-version="true"></script>
+}

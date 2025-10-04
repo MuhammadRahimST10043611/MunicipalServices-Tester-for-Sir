@@ -1,0 +1,659 @@
+/* COMING SOON PAGES STYLING */
+
+.coming-soon-container {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: var(--spacing-2xl) 0;
+}
+
+.coming-soon-content {
+    position: relative;
+    z-index: 10;
+    max-width: 800px;
+    padding: var(--spacing-2xl);
+}
+
+/* Animated Icon Section */
+.coming-soon-icon {
+    position: relative;
+    display: inline-block;
+    animation: iconFloat 3s ease-in-out infinite;
+}
+
+    .coming-soon-icon i {
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        filter: drop-shadow(0 4px 8px rgba(102, 126, 234, 0.3));
+    }
+
+.icon-decoration {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    pointer-events: none;
+}
+
+    .icon-decoration i {
+        position: absolute;
+        font-size: 1.5rem;
+        opacity: 0.6;
+    }
+
+.sparkle-1 {
+    top: 10%;
+    left: 10%;
+    color: var(--color-warning);
+    animation: sparkleRotate 4s linear infinite;
+}
+
+.sparkle-2 {
+    top: 20%;
+    right: 15%;
+    color: var(--color-success);
+    animation: sparkleRotate 4s linear infinite reverse;
+    animation-delay: 1s;
+}
+
+.sparkle-3 {
+    bottom: 15%;
+    left: 20%;
+    color: var(--color-info);
+    animation: sparkleRotate 4s linear infinite;
+    animation-delay: 2s;
+}
+
+/* Title and Badge */
+.coming-soon-title {
+    font-size: 3rem;
+    font-weight: var(--font-weight-bold);
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+    margin-bottom: var(--spacing-xl);
+}
+
+.coming-soon-badge {
+    display: inline-block;
+    background: var(--gradient-warning);
+    color: #8b4513;
+    padding: var(--spacing-md) var(--spacing-xl);
+    border-radius: 50px;
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-lg);
+    border: 2px solid rgba(251, 191, 36, 0.3);
+    box-shadow: 0 5px 15px rgba(251, 191, 36, 0.3);
+    animation: badgePulse 2s ease-in-out infinite;
+}
+
+/* Description */
+.coming-soon-description .lead {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-relaxed);
+}
+
+.coming-soon-description p {
+    font-size: var(--font-size-lg);
+    line-height: var(--line-height-relaxed);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Features Preview */
+.features-preview {
+    background: var(--bg-light);
+    border-radius: var(--border-radius-xl);
+    padding: var(--spacing-2xl);
+    border: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+.feature-card {
+    background: var(--color-white);
+    border-radius: var(--border-radius-card);
+    padding: var(--spacing-2xl);
+    height: 100%;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-all);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+    }
+
+.feature-icon {
+    font-size: 3rem;
+    margin-bottom: var(--spacing-lg);
+}
+
+.feature-title {
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-md);
+    font-size: var(--font-size-lg);
+}
+
+.feature-text {
+    color: var(--text-muted);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-relaxed);
+    margin-bottom: 0;
+}
+
+/* Progress Section */
+.progress-section {
+    background: var(--color-white);
+    border-radius: var(--border-radius-card);
+    padding: var(--spacing-2xl);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.progress-info {
+    text-align: center;
+}
+
+.progress-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.progress-label {
+    font-weight: var(--font-weight-medium);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.progress-percentage {
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+    font-size: var(--font-size-xl);
+}
+
+.progress-bar-container {
+    position: relative;
+    background: #e2e8f0;
+    border-radius: 25px;
+    height: 12px;
+    max-width: 400px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.progress-bar {
+    background: var(--gradient-primary);
+    height: 100%;
+    border-radius: 25px;
+    transition: width 2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.progress-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+    border-radius: 25px;
+    animation: progressGlow 2s ease-in-out infinite;
+}
+
+/* Status Preview Timeline */
+.status-preview {
+    background: var(--bg-light);
+    border-radius: var(--border-radius-xl);
+    padding: var(--spacing-2xl);
+    border: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+.preview-timeline {
+    position: relative;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+    .preview-timeline::before {
+        content: '';
+        position: absolute;
+        left: 30px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: #e2e8f0;
+    }
+
+.timeline-step {
+    position: relative;
+    padding-left: 80px;
+    margin-bottom: var(--spacing-xl);
+    opacity: 0.5;
+    transition: var(--transition-all);
+}
+
+    .timeline-step.completed,
+    .timeline-step.active {
+        opacity: 1;
+    }
+
+        .timeline-step.active .step-icon {
+            background: var(--color-primary);
+            color: var(--color-white);
+            animation: activeStepPulse 2s ease-in-out infinite;
+        }
+
+        .timeline-step.completed .step-icon {
+            background: var(--color-success);
+            color: var(--color-white);
+        }
+
+.step-icon {
+    position: absolute;
+    left: 18px;
+    top: 8px;
+    width: 24px;
+    height: 24px;
+    background: #e2e8f0;
+    color: #a0aec0;
+    border-radius: var(--border-radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    z-index: 2;
+    transition: var(--transition-all);
+}
+
+.step-content {
+    background: var(--color-white);
+    border-radius: var(--border-radius-card);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+    .step-content h6 {
+        margin-bottom: 0.5rem;
+        color: var(--text-primary);
+        font-weight: var(--font-weight-semibold);
+        font-size: 0.9rem;
+    }
+
+    .step-content p {
+        margin-bottom: 0;
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        line-height: var(--line-height-normal);
+    }
+
+/* Call to Action Buttons */
+.coming-soon-actions {
+    margin: var(--spacing-2xl) 0;
+}
+
+    .coming-soon-actions .btn {
+        border-radius: 50px;
+        padding: 15px 30px;
+        font-weight: var(--font-weight-semibold);
+        transition: var(--transition-all);
+        box-shadow: var(--shadow-md);
+    }
+
+        .coming-soon-actions .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-xl);
+        }
+
+    .coming-soon-actions .btn-primary {
+        background: var(--gradient-primary);
+        border: none;
+    }
+
+    .coming-soon-actions .btn-outline-primary {
+        border: 2px solid var(--color-primary);
+        color: var(--color-primary);
+    }
+
+        .coming-soon-actions .btn-outline-primary:hover {
+            background: var(--color-primary);
+            color: var(--color-white);
+        }
+
+/* Notification Signup */
+.notification-signup {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.notification-card {
+    background: var(--color-white);
+    border-radius: var(--border-radius-card);
+    padding: var(--spacing-2xl);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+    .notification-card h6 {
+        color: var(--text-primary);
+        font-weight: var(--font-weight-semibold);
+        margin-bottom: var(--spacing-md);
+    }
+
+    .notification-card .input-group {
+        border-radius: 50px;
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .notification-card .form-control {
+        border: none;
+        padding: 12px 20px;
+        background: var(--bg-light);
+    }
+
+    .notification-card .btn {
+        border: none;
+        padding: 12px 20px;
+        background: var(--gradient-primary);
+        font-weight: var(--font-weight-semibold);
+    }
+
+/* Current Alternative */
+.current-alternative {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.alternative-card {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: var(--border-radius-card);
+    padding: var(--spacing-xl);
+    border: 2px dashed #cbd5e0;
+    transition: var(--transition-all);
+}
+
+    .alternative-card:hover {
+        border-color: var(--color-primary);
+        background: linear-gradient(135deg, #edf2f7 0%, #e2e8f0 100%);
+    }
+
+    .alternative-card h6 {
+        color: var(--text-primary);
+        font-weight: var(--font-weight-semibold);
+        margin-bottom: var(--spacing-md);
+    }
+
+/* Background Animation */
+.coming-soon-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.floating-shape {
+    position: absolute;
+    border-radius: var(--border-radius-full);
+    opacity: 0.1;
+    animation: floatShape 15s linear infinite;
+}
+
+.shape-1 {
+    width: 100px;
+    height: 100px;
+    background: var(--color-primary);
+    top: 10%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.shape-2 {
+    width: 150px;
+    height: 150px;
+    background: var(--color-success);
+    top: 60%;
+    right: 10%;
+    animation-delay: 3s;
+}
+
+.shape-3 {
+    width: 80px;
+    height: 80px;
+    background: var(--color-warning);
+    bottom: 20%;
+    left: 20%;
+    animation-delay: 6s;
+}
+
+.shape-4 {
+    width: 120px;
+    height: 120px;
+    background: var(--color-info);
+    top: 30%;
+    right: 30%;
+    animation-delay: 9s;
+}
+
+/* Animations */
+@keyframes iconFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+@keyframes sparkleRotate {
+    0% {
+        transform: rotate(0deg) scale(1);
+        opacity: 0.6;
+    }
+
+    50% {
+        transform: rotate(180deg) scale(1.2);
+        opacity: 1;
+    }
+
+    100% {
+        transform: rotate(360deg) scale(1);
+        opacity: 0.6;
+    }
+}
+
+@keyframes badgePulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 5px 15px rgba(251, 191, 36, 0.3);
+    }
+
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 8px 25px rgba(251, 191, 36, 0.5);
+    }
+}
+
+@keyframes progressGlow {
+    0%, 100% {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes activeStepPulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.4);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(102, 126, 234, 0);
+    }
+}
+
+@keyframes floatShape {
+    0% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    25% {
+        transform: translateY(-20px) rotate(90deg);
+    }
+
+    50% {
+        transform: translateY(0) rotate(180deg);
+    }
+
+    75% {
+        transform: translateY(-10px) rotate(270deg);
+    }
+
+    100% {
+        transform: translateY(0) rotate(360deg);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .coming-soon-title {
+        font-size: 2.5rem;
+    }
+
+    .coming-soon-icon i {
+        font-size: 4rem;
+    }
+
+    .coming-soon-content {
+        padding: var(--spacing-xl);
+    }
+
+    .features-preview,
+    .progress-section,
+    .status-preview {
+        padding: var(--spacing-xl);
+    }
+
+    .feature-card {
+        padding: var(--spacing-lg);
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .coming-soon-actions {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+
+        .coming-soon-actions .btn {
+            width: 100%;
+            margin: 0 0 var(--spacing-md) 0;
+        }
+
+    .timeline-step {
+        padding-left: 60px;
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .step-icon {
+        left: 15px;
+        width: 20px;
+        height: 20px;
+        font-size: 8px;
+    }
+
+    .preview-timeline::before {
+        left: 25px;
+    }
+}
+
+@media (max-width: 576px) {
+    .coming-soon-title {
+        font-size: 2rem;
+        line-height: 1.2;
+    }
+
+    .coming-soon-icon i {
+        font-size: 3rem;
+    }
+
+    .coming-soon-badge {
+        padding: var(--spacing-sm) var(--spacing-lg);
+        font-size: var(--font-size-base);
+    }
+
+    .coming-soon-description .lead {
+        font-size: 1.2rem;
+    }
+
+    .features-preview .row {
+        gap: var(--spacing-md);
+    }
+
+    .feature-icon {
+        font-size: 2rem;
+        margin-bottom: var(--spacing-md);
+    }
+
+    .feature-title {
+        font-size: var(--font-size-base);
+    }
+
+    .feature-text {
+        font-size: 0.85rem;
+    }
+
+    .notification-card {
+        padding: var(--spacing-lg);
+    }
+
+        .notification-card .input-group {
+            flex-direction: column;
+            border-radius: var(--border-radius-button);
+        }
+
+        .notification-card .form-control,
+        .notification-card .btn {
+            border-radius: var(--border-radius-button);
+            margin-bottom: 0.5rem;
+        }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    .coming-soon-icon,
+    .sparkle-1,
+    .sparkle-2,
+    .sparkle-3,
+    .coming-soon-badge,
+    .floating-shape,
+    .step-icon {
+        animation: none;
+    }
+
+    .feature-card:hover,
+    .coming-soon-actions .btn:hover {
+        transform: none;
+    }
+}

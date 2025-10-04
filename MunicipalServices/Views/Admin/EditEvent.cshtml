@@ -1,0 +1,392 @@
+﻿@model MunicipalServices.Models.LocalEvent
+@{
+    ViewData["Title"] = "Edit Event";
+}
+
+<div class="admin-content-wrapper">
+    <!-- Header Section -->
+    <div class="admin-page-header mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="admin-title">
+                    <i class="fas fa-edit me-3 text-warning"></i>
+                    Edit Event
+                </h1>
+                <p class="admin-subtitle">Update event information and details</p>
+            </div>
+            <div>
+                <a asp-action="Events" class="btn btn-outline-secondary me-2">
+                    <i class="fas fa-list me-2"></i>View All Events
+                </a>
+                <a asp-action="Dashboard" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Form Card -->
+    <div class="card border-0 shadow-lg">
+        <div class="card-header bg-warning text-dark">
+            <h5 class="mb-0">
+                <i class="fas fa-edit me-2"></i>
+                Update Event Information
+            </h5>
+        </div>
+        <div class="card-body p-4">
+            <form asp-action="EditEvent" method="post" id="editEventForm" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.Id)
+                @Html.HiddenFor(m => m.CreatedAt)
+                @Html.HiddenFor(m => m.ViewCount)
+
+                <!-- Validation Summary -->
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <h6><i class="fas fa-exclamation-circle me-2"></i>Please correct the following errors:</h6>
+                        <ul class="mb-0 mt-2">
+                            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                            {
+                                <li>@error.ErrorMessage</li>
+                            }
+                        </ul>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                <div class="row g-4">
+                    <!-- Left Column -->
+                    <div class="col-lg-8">
+                        <!-- Event Title -->
+                        <div class="form-group mb-4">
+                            <label asp-for="Title" class="form-label fw-bold">
+                                <i class="fas fa-heading me-2 text-primary"></i>Event Title <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="Title" class="form-control form-control-lg"
+                                   placeholder="Enter event title..." maxlength="200" required>
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+
+                        <!-- Event Description -->
+                        <div class="form-group mb-4">
+                            <label asp-for="Description" class="form-label fw-bold">
+                                <i class="fas fa-align-left me-2 text-primary"></i>Event Description <span class="text-danger">*</span>
+                            </label>
+                            <textarea asp-for="Description" class="form-control" rows="6"
+                                      placeholder="Provide detailed information about the event..."
+                                      maxlength="1000" required oninput="updateCharCount(this)"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                            <div class="d-flex justify-content-between">
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle me-1"></i>Include important details
+                                </div>
+                                <small id="descCharCount" class="text-muted">@Model.Description.Length/1000 characters</small>
+                            </div>
+                        </div>
+
+                        <!-- Location -->
+                        <div class="form-group mb-4">
+                            <label asp-for="Location" class="form-label fw-bold">
+                                <i class="fas fa-map-marker-alt me-2 text-danger"></i>Location
+                            </label>
+                            <input asp-for="Location" class="form-control"
+                                   placeholder="e.g., Municipal Hall, Main Street, City Center..." maxlength="200">
+                            <span asp-validation-for="Location" class="text-danger"></span>
+                        </div>
+
+                    <!-- Right Column -->
+                    <div class="col-lg-4">
+                        <!-- Event Date -->
+                        <div class="form-group mb-4">
+                            <label asp-for="EventDate" class="form-label fw-bold">
+                                <i class="fas fa-calendar-alt me-2 text-primary"></i>Event Date & Time <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="EventDate" class="form-control" type="datetime-local" required>
+                            <span asp-validation-for="EventDate" class="text-danger"></span>
+                        </div>
+
+                        <!-- Category -->
+                        <div class="form-group mb-4">
+                            <label asp-for="Category" class="form-label fw-bold">
+                                <i class="fas fa-tags me-2 text-warning"></i>Event Category <span class="text-danger">*</span>
+                            </label>
+                            <select asp-for="Category" class="form-select" required>
+                                <option value="">Select a category...</option>
+                                <option value="Community">Community</option>
+                                <option value="Education">Education</option>
+                                <option value="Infrastructure">Infrastructure</option>
+                                <option value="Health & Safety">Health & Safety</option>
+                                <option value="Environment">Environment</option>
+                                <option value="Recreation">Recreation</option>
+                                <option value="Government">Government</option>
+                                <option value="Emergency">Emergency</option>
+                                <option value="Cultural">Cultural</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <span asp-validation-for="Category" class="text-danger"></span>
+                        </div>
+
+                        <!-- Priority -->
+                        <div class="form-group mb-4">
+                            <label asp-for="Priority" class="form-label fw-bold">
+                                <i class="fas fa-exclamation-triangle me-2 text-danger"></i>Priority Level
+                            </label>
+                            <select asp-for="Priority" class="form-select">
+                                <option value="1">1 - Low Priority</option>
+                                <option value="2">2 - Normal</option>
+                                <option value="3">3 - Important</option>
+                                <option value="4">4 - High Priority</option>
+                                <option value="5">5 - Critical/Urgent</option>
+                            </select>
+                            <span asp-validation-for="Priority" class="text-danger"></span>
+                        </div>
+
+                        <!-- Status -->
+                        <div class="form-group mb-4">
+                            <div class="form-check">
+                                <input asp-for="IsActive" class="form-check-input" type="checkbox">
+                                <label asp-for="IsActive" class="form-check-label fw-bold">
+                                    <i class="fas fa-eye me-2 text-success"></i>Active Event
+                                </label>
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle me-1"></i>Only active events are visible to the public
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Event Info Card -->
+                        <div class="card border-info">
+                            <div class="card-header bg-info text-white">
+                                <h6 class="mb-0">
+                                    <i class="fas fa-info me-2"></i>Event Info
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="info-item mb-2">
+                                    <strong>Event ID:</strong> #@Model.Id
+                                </div>
+                                <div class="info-item mb-2">
+                                    <strong>Created:</strong> @Model.CreatedAt.ToString("MMM dd, yyyy")
+                                </div>
+                                <div class="info-item mb-2">
+                                    <strong>Views:</strong> @Model.ViewCount
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="d-flex justify-content-between align-items-center mt-4 pt-4 border-top">
+                    <div class="form-text text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Fields marked with <span class="text-danger">*</span> are required
+                    </div>
+                    <div class="btn-group">
+                        <a asp-action="Events" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-warning btn-lg" id="submitBtn">
+                            <i class="fas fa-save me-2"></i>Update Event
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .image-upload-area {
+        border: 2px dashed #ddd;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        position: relative;
+        background: #f8f9fa;
+        transition: all 0.3s ease;
+    }
+
+    .image-upload-area:hover {
+        border-color: #ffc107;
+        background: #fffef0;
+    }
+
+    .upload-placeholder {
+        cursor: pointer;
+        padding: 30px;
+    }
+
+    .current-image img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+    }
+
+    .image-preview {
+        position: relative;
+    }
+
+    .image-preview img {
+        width: 100%;
+        height: auto;
+        max-height: 400px;
+        object-fit: contain;
+        border-radius: 10px;
+    }
+
+    .preview-overlay {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+    }
+
+    .drag-over {
+        border-color: #28a745 !important;
+        background: #e8f5e9 !important;
+    }
+</style>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        // Character count
+        function updateCharCount(textarea) {
+            const count = textarea.value.length;
+            const counter = document.getElementById('descCharCount');
+            counter.textContent = count + '/1000 characters';
+            
+            if (count > 950) {
+                counter.className = 'text-danger';
+            } else if (count > 900) {
+                counter.className = 'text-warning';
+            } else {
+                counter.className = 'text-muted';
+            }
+        }
+
+        // Image handling
+        function handleImageSelect(input) {
+            const file = input.files[0];
+            if (file) {
+                // Validate file type
+                const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+                if (!validTypes.includes(file.type)) {
+                    alert('Please select a valid image file (JPG, PNG, GIF, or WEBP)');
+                    input.value = '';
+                    return;
+                }
+
+                // Validate file size (10MB)
+                if (file.size > 10 * 1024 * 1024) {
+                    alert('Image size must be less than 10MB');
+                    input.value = '';
+                    return;
+                }
+
+                // Display preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('previewImg').src = e.target.result;
+                    document.getElementById('uploadPlaceholder').classList.add('d-none');
+                    document.getElementById('imagePreview').classList.remove('d-none');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function removeImage() {
+            document.getElementById('imageFileInput').value = '';
+            document.getElementById('uploadPlaceholder').classList.remove('d-none');
+            document.getElementById('imagePreview').classList.add('d-none');
+            document.getElementById('previewImg').src = '';
+        }
+
+        // Drag and drop functionality
+        const uploadArea = document.getElementById('imageUploadArea');
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) {
+            uploadArea.classList.add('drag-over');
+        }
+
+        function unhighlight(e) {
+            uploadArea.classList.remove('drag-over');
+        }
+
+        uploadArea.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+
+            if (files.length > 0) {
+                document.getElementById('imageFileInput').files = files;
+                handleImageSelect(document.getElementById('imageFileInput'));
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set character count on load
+            const descriptionTextarea = document.querySelector('textarea[name="Description"]');
+            if (descriptionTextarea) {
+                updateCharCount(descriptionTextarea);
+            }
+
+            // Form submission handling
+            document.getElementById('editEventForm').addEventListener('submit', function(e) {
+                // Check if image is required (no existing image) and not uploaded
+                if (!hasExistingImage) {
+                    const imageInput = document.getElementById('imageFileInput');
+                    if (!imageInput.files || imageInput.files.length === 0) {
+                        e.preventDefault();
+                        alert('Please upload an event image. Image is required for all events.');
+                        return false;
+                    }
+                }
+
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Updating Event...';
+                submitBtn.disabled = true;
+            });
+        });
+    </script>
+}

@@ -1,0 +1,174 @@
+﻿@model List<MunicipalServices.Models.ServiceRequest>
+@{
+    ViewData["Title"] = "All Reports";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="hero-title mb-0">
+            <i class="fas fa-list me-2"></i>
+            All Service Reports
+        </h2>
+        <p class="text-muted">View all submitted service requests</p>
+    </div>
+    <a asp-action="ReportIssue" class="btn btn-primary">
+        <i class="fas fa-plus me-2"></i>New Report
+    </a>
+</div>
+
+@if (Model != null && Model.Any())
+{
+    <div class="row">
+        @foreach (var report in Model.OrderByDescending(r => r.DateReported))
+        {
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-header bg-white border-bottom-0">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h6 class="mb-0">
+                                <i class="fas fa-ticket-alt me-2 text-primary"></i>
+                                #@report.Id
+                            </h6>
+                            <span class="badge @(report.Priority >= 4 ? "bg-danger" :
+                                                                                                                                                                             report.Priority >= 3 ? "bg-warning" : "bg-success")">
+                                @(report.Priority >= 4 ? "High" :
+                                                        report.Priority >= 3 ? "Medium" : "Low") Priority
+                                                                                            </span>
+                                                                                        </div>
+                                                                                    </div>
+
+                    <div class="card-body">
+                        <h6 class="card-title text-primary">@report.Category</h6>
+                        <p class="text-muted mb-2">
+                            <i class="fas fa-map-marker-alt me-1"></i>
+                            @report.Location
+                        </p>
+                        <p class="card-text">
+                            @(report.Description.Length > 100
+                                                ? report.Description.Substring(0, 100) + "..."
+                                                : report.Description)
+                </p>
+
+                        <!-- Attached Files Section -->
+                @if (report.AttachedFiles.Any())
+                        {
+                            <div class="mb-3">
+                                <h6 class="text-muted mb-2">
+                                    <i class="fas fa-paperclip me-1"></i>
+                                    Attached Files (@report.AttachedFiles.Count)
+                                </h6>
+
+                                <div class="attached-files">
+                                    @foreach (var file in report.AttachedFiles)
+                                    {
+                                        var fileName = System.IO.Path.GetFileName(file);
+                                        var extension = System.IO.Path.GetExtension(file).ToLower();
+                                        var isImage = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp" }.Contains(extension);
+
+                                        <div class="file-item mb-2 p-2 bg-light rounded">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div class="d-flex align-items-center">
+                                                    @if (isImage)
+                                                    {
+                                                        <i class="fas fa-image text-success me-2"></i>
+                                                    }
+                                                    else if (extension == ".pdf")
+                                                    {
+                                                        <i class="fas fa-file-pdf text-danger me-2"></i>
+                                                    }
+                                                    else if (new[] { ".doc", ".docx" }.Contains(extension))
+                                                    {
+                                                        <i class="fas fa-file-word text-primary me-2"></i>
+                                                    }
+                                                    else
+                                                    {
+                                                        <i class="fas fa-file text-muted me-2"></i>
+                                                    }
+
+                                                    <span class="file-name text-truncate"
+                                                          style="max-width: 150px;"
+                                                          title="@fileName">@fileName</span>
+                                                </div>
+
+                                                <div class="file-actions">
+                                                    @if (isImage)
+                                                    {
+                                                        <a href="@file" target="_blank"
+                                                           class="btn btn-sm btn-outline-primary me-1"
+                                                           title="View Image in New Tab">
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+                                                    }
+                                                    <a href="@file" download="@fileName"
+                                                       class="btn btn-sm btn-outline-secondary"
+                                                       title="Download File">
+                                                        <i class="fas fa-download"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+
+                                            <!-- Image thumbnail for images -->
+                                            @if (isImage)
+                                            {
+                                                <div class="mt-2">
+                                                    <a href="@file" target="_blank" title="Click to view full size">
+                                                        <img src="@file" alt="@fileName"
+                                                             class="img-thumbnail preview-thumbnail"
+                                                             style="max-height: 80px; max-width: 120px; cursor: pointer;">
+                                                    </a>
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+
+                        <!-- Single Action Button -->
+                        <div class="mt-3">
+                            <div class="d-grid">
+                                <a asp-controller="ServiceRequest" asp-action="ReportDetails" asp-route-id="@report.Id"
+                                   class="btn btn-primary">
+                                    <i class="fas fa-eye me-2"></i>View Full Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer bg-white border-top-0">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                <i class="fas fa-clock me-1"></i>
+                                @report.DateReported.ToString("MMM dd, yyyy")
+                            </small>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge bg-secondary">@report.Status</span>
+                                @if (report.AttachedFiles.Any())
+                                {
+                                    <span class="badge bg-info text-dark">
+                                        <i class="fas fa-paperclip me-1"></i>@report.AttachedFiles.Count
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="text-center py-5">
+        <i class="fas fa-inbox fa-4x text-muted mb-3"></i>
+        <h4 class="text-muted">No Reports Yet</h4>
+        <p class="text-muted">Start by submitting your first service request</p>
+        <a asp-action="ReportIssue" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Report an Issue
+        </a>
+    </div>
+}
+
+@section Scripts {
+    <script src="~/js/pages/view-reports.js" asp-append-version="true"></script>
+}

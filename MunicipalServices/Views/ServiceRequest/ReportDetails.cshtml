@@ -1,0 +1,326 @@
+﻿@model MunicipalServices.Models.ServiceRequest
+@{
+    ViewData["Title"] = $"Report Details - #{Model.Id}";
+}
+
+<div class="report-details-container">
+    <!-- Header Section -->
+    <div class="report-details-header mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h1 class="hero-title mb-2">
+                    <i class="fas fa-file-alt me-2"></i>
+                    Report Details
+                </h1>
+                <div class="d-flex align-items-center gap-3 flex-wrap">
+                    <span class="badge bg-primary fs-6 px-3 py-2">
+                        <i class="fas fa-ticket-alt me-1"></i>
+                        ID: #@Model.Id
+                    </span>
+                    <span class="badge @(Model.Priority >= 4 ? "bg-danger" : Model.Priority >= 3 ? "bg-warning text-dark" : "bg-success") fs-6 px-3 py-2">
+                        <i class="fas fa-@(Model.Priority >= 4 ? "exclamation-triangle" : Model.Priority >= 3 ? "info-circle" : "check-circle") me-1"></i>
+                        @(Model.Priority >= 4 ? "High" : Model.Priority >= 3 ? "Medium" : "Low") Priority
+                    </span>
+                    <span class="badge bg-secondary fs-6 px-3 py-2">
+                        <i class="fas fa-clock me-1"></i>
+                        @Model.Status
+                    </span>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <a asp-controller="ServiceRequest" asp-action="ViewReports" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to All Reports
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Main Report Information -->
+        <div class="col-lg-8">
+            <!-- Report Overview Card -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Report Overview
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <label class="info-label">
+                                    <i class="fas fa-tags me-2 text-primary"></i>Category
+                                </label>
+                                <div class="info-value">@Model.Category</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <label class="info-label">
+                                    <i class="fas fa-calendar-alt me-2 text-primary"></i>Date Reported
+                                </label>
+                                <div class="info-value">
+                                    @Model.DateReported.ToString("MMMM dd, yyyy")
+                                    <small class="text-muted d-block">@Model.DateReported.ToString("h:mm tt")</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="info-item">
+                                <label class="info-label">
+                                    <i class="fas fa-map-marker-alt me-2 text-primary"></i>Location
+                                </label>
+                                <div class="info-value location-text">@Model.Location</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Description Card -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-comment-alt me-2"></i>
+                        Detailed Description
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="description-content">
+                        @Model.Description
+                    </div>
+                    <div class="description-meta mt-3">
+                        <small class="text-muted">
+                            <i class="fas fa-text-width me-1"></i>
+                            @Model.Description.Length characters
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attached Files Card -->
+            @if (Model.AttachedFiles.Any())
+            {
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-paperclip me-2"></i>
+                            Attached Files (@Model.AttachedFiles.Count)
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="attached-files-grid">
+                            @foreach (var file in Model.AttachedFiles)
+                            {
+                                var fileName = System.IO.Path.GetFileName(file);
+                                var extension = System.IO.Path.GetExtension(file).ToLower();
+                                var isImage = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp" }.Contains(extension);
+
+                                <div class="file-card">
+                                    <div class="file-header">
+                                        <div class="file-icon">
+                                            @if (isImage)
+                                            {
+                                                <i class="fas fa-image text-success"></i>
+                                            }
+                                            else if (extension == ".pdf")
+                                            {
+                                                <i class="fas fa-file-pdf text-danger"></i>
+                                            }
+                                            else if (new[] { ".doc", ".docx" }.Contains(extension))
+                                            {
+                                                <i class="fas fa-file-word text-primary"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fas fa-file text-muted"></i>
+                                            }
+                                        </div>
+                                        <div class="file-info">
+                                            <div class="file-name" title="@fileName">@fileName</div>
+                                            <div class="file-type">@extension.ToUpper().TrimStart('.') File</div>
+                                        </div>
+                                        <div class="file-actions">
+                                            @if (isImage)
+                                            {
+                                                <a href="@file" target="_blank"
+                                                   class="btn btn-sm btn-outline-primary me-2"
+                                                   title="View Image in New Tab">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                            }
+                                            <a href="@file" download="@fileName"
+                                               class="btn btn-sm btn-outline-secondary"
+                                               title="Download File">
+                                                <i class="fas fa-download"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    @if (isImage)
+                                    {
+                                        <div class="file-preview mt-3">
+                                            <a href="@file" target="_blank" title="Click to view full size">
+                                                <img src="@file" alt="@fileName"
+                                                     class="img-thumbnail preview-image"
+                                                     onerror="handleImageError(this);">
+                                            </a>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body text-center py-5">
+                        <i class="fas fa-paperclip fa-3x text-muted mb-3"></i>
+                        <h6 class="text-muted">No Files Attached</h6>
+                        <p class="text-muted mb-0">This report was submitted without any supporting files.</p>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Sidebar Information -->
+        <div class="col-lg-4">
+            <!-- Status Timeline Card -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h6 class="mb-0">
+                        <i class="fas fa-history me-2"></i>
+                        Report Status
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="status-timeline">
+                        <div class="status-item active">
+                            <div class="status-icon">
+                                <i class="fas fa-paper-plane"></i>
+                            </div>
+                            <div class="status-content">
+                                <div class="status-title">Submitted</div>
+                                <div class="status-time">@Model.DateReported.ToString("MMM dd, yyyy")</div>
+                            </div>
+                        </div>
+
+                        <div class="status-item @(Model.Status == "In Progress" || Model.Status == "Resolved" ? "active" : "")">
+                            <div class="status-icon">
+                                <i class="fas fa-tools"></i>
+                            </div>
+                            <div class="status-content">
+                                <div class="status-title">In Progress</div>
+                                <div class="status-time">
+                                    @if (Model.Status == "In Progress" || Model.Status == "Resolved")
+                                    {
+                                        <text>Processing...</text>
+                                    }
+                                    else
+                                    {
+                                        <text>Pending</text>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="status-item @(Model.Status == "Resolved" ? "active" : "")">
+                            <div class="status-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="status-content">
+                                <div class="status-title">Resolved</div>
+                                <div class="status-time">
+                                    @if (Model.Status == "Resolved")
+                                    {
+                                        <text>Completed</text>
+                                    }
+                                    else
+                                    {
+                                        <text>Pending</text>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Report Statistics Card -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-dark text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        Report Statistics
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="stat-item">
+                        <div class="stat-label">Priority Level</div>
+                        <div class="stat-value">
+                            <div class="priority-bar">
+                                <div class="priority-fill" style="width: @(Model.Priority * 20)%"></div>
+                            </div>
+                            <span class="priority-text">@Model.Priority/5</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-item">
+                        <div class="stat-label">Days Since Reported</div>
+                        <div class="stat-value">
+                            @((DateTime.Now - Model.DateReported).Days) days
+                        </div>
+                    </div>
+
+                    <div class="stat-item">
+                        <div class="stat-label">Attachments</div>
+                        <div class="stat-value">
+                            @Model.AttachedFiles.Count file@(Model.AttachedFiles.Count != 1 ? "s" : "")
+                        </div>
+                    </div>
+
+                    <div class="stat-item">
+                        <div class="stat-label">Character Count</div>
+                        <div class="stat-value">
+                            @Model.Description.Length characters
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions Card -->
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-secondary text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-bolt me-2"></i>
+                        Quick Actions
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-controller="ServiceRequest" asp-action="ReportIssue"
+                           class="btn btn-success">
+                            <i class="fas fa-plus me-2"></i>Report New Issue
+                        </a>
+                        <a asp-controller="ServiceRequest" asp-action="ViewReports"
+                           class="btn btn-outline-primary">
+                            <i class="fas fa-list me-2"></i>View All Reports
+                        </a>
+                        <a asp-controller="Home" asp-action="Index"
+                           class="btn btn-outline-secondary">
+                            <i class="fas fa-home me-2"></i>Back to Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/pages/report-details.js" asp-append-version="true"></script>
+}

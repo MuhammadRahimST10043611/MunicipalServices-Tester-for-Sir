@@ -1,0 +1,466 @@
+﻿@{
+    ViewData["Title"] = "Home";
+    var stats = ViewBag.Stats as MunicipalServices.Models.DashboardStats;
+    var recentReports = ViewBag.RecentReports as List<MunicipalServices.Models.ServiceRequest>;
+    var engagementStats = ViewBag.EngagementStats as MunicipalServices.Models.UserEngagementStats;
+}
+
+<!-- Celebration Alert (Replaces Modal) -->
+@if (TempData["ShowCelebration"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show celebration-alert" role="alert">
+        <div class="text-center py-3">
+            <div class="celebration-animation mb-3">
+                <i class="fas fa-trophy fa-4x text-warning mb-3 celebration-trophy"></i>
+                <div class="fireworks d-inline-block position-relative">
+                    <i class="fas fa-star text-warning celebration-sparkle"></i>
+                    <i class="fas fa-star text-primary celebration-sparkle"></i>
+                    <i class="fas fa-star text-success celebration-sparkle"></i>
+                </div>
+            </div>
+
+            <h2 class="mb-3"><i class="fas fa-trophy me-2"></i>ACHIEVEMENT UNLOCKED!</h2>
+            <h3 class="mb-3"><i class="fas fa-medal me-2"></i>COMMUNITY CHAMPION!</h3>
+            <p class="lead mb-3">@TempData["CelebrationMessage"]</p>
+
+            <div class="achievement-badge mb-3">
+                <span class="badge bg-warning text-dark px-4 py-2 fs-6">
+                    <i class="fas fa-medal me-2"></i><i class="fas fa-trophy me-1"></i> Community Champion - Three Reports Strong!
+                </span>
+            </div>
+
+            <button type="button" class="btn btn-light btn-lg px-4" data-bs-dismiss="alert">
+                <i class="fas fa-heart me-2"></i>Thank You!
+            </button>
+        </div>
+    </div>
+}
+
+<!-- ENHANCED HERO SECTION - Professional Government Portal -->
+<div class="hero-section-enhanced">
+    <div class="hero-content">
+        <div class="hero-badge">
+            <i class="fas fa-shield-alt me-2"></i>Official Municipal Portal
+        </div>
+        <h1 class="hero-title-main">
+            <i class="fas fa-city me-3"></i>
+            Municipal Services Portal
+        </h1>
+        <p class="hero-subtitle">Connecting Communities • Improving Lives • Building Tomorrow</p>
+        <div class="hero-stats-row">
+            <div class="hero-stat">
+                <span class="stat-number">@(stats?.TotalReports ?? 0)</span>
+                <span class="stat-label">Active Reports</span>
+            </div>
+            <div class="hero-stat">
+                <span class="stat-number">24/7</span>
+                <span class="stat-label">Service Available</span>
+            </div>
+            <div class="hero-stat">
+                <span class="stat-number">@(stats?.ResolvedReports ?? 0)</span>
+                <span class="stat-label">Issues Resolved</span>
+            </div>
+        </div>
+    </div>
+    <div class="hero-background-pattern"></div>
+</div>
+
+<!-- QUICK ACTION CARDS - Professional Service Menu -->
+<div class="quick-actions-section">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <h2 class="section-title">Municipal Services</h2>
+            <p class="section-subtitle">Choose from our comprehensive range of community services</p>
+            <div class="title-divider"></div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Primary Service - Report Issues -->
+            <div class="col-lg-4">
+                <a asp-controller="ServiceRequest" asp-action="ReportIssue" class="text-decoration-none">
+                    <div class="service-card-premium primary-service">
+                        <div class="service-icon-container">
+                            <i class="fas fa-exclamation-triangle service-icon"></i>
+                            <div class="icon-glow"></div>
+                        </div>
+                        <div class="service-content">
+                            <h4 class="service-title">Report Community Issues</h4>
+                            <p class="service-description">Submit reports for municipal issues including water, roads, electricity, and more. Your voice helps build a better community.</p>
+                            <div class="service-features">
+                                <span class="feature-badge"><i class="fas fa-camera me-1"></i> Photo Upload</span>
+                                <span class="feature-badge"><i class="fas fa-map-marker-alt me-1"></i> Location Tracking</span>
+                                <span class="feature-badge"><i class="fas fa-clock me-1"></i> Real-time Updates</span>
+                            </div>
+                            <div class="service-action">
+                                <span class="action-text">Report an Issue</span>
+                                <i class="fas fa-arrow-right action-arrow"></i>
+                            </div>
+                        </div>
+                        <div class="service-pattern"></div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Secondary Service - View Reports -->
+            <div class="col-lg-4">
+                <a asp-controller="ServiceRequest" asp-action="ViewReports" class="text-decoration-none">
+                    <div class="service-card-premium secondary-service">
+                        <div class="service-icon-container">
+                            <i class="fas fa-list-alt service-icon"></i>
+                            <div class="icon-glow"></div>
+                        </div>
+                        <div class="service-content">
+                            <h4 class="service-title">View All Reports</h4>
+                            <p class="service-description">Browse and track all submitted reports. Stay informed about community issues and their resolution progress.</p>
+                            <div class="service-features">
+                                <span class="feature-badge"><i class="fas fa-eye me-1"></i> Status Tracking</span>
+                                <span class="feature-badge"><i class="fas fa-filter me-1"></i> Filter Options</span>
+                                <span class="feature-badge"><i class="fas fa-download me-1"></i> Export Data</span>
+                            </div>
+                            <div class="service-action">
+                                <span class="action-text">Browse Reports</span>
+                                <i class="fas fa-arrow-right action-arrow"></i>
+                            </div>
+                        </div>
+                        <div class="service-pattern"></div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- NEW: Local Events Service -->
+            <div class="col-lg-4">
+                <a asp-controller="Events" asp-action="Index" class="text-decoration-none">
+                    <div class="service-card-premium tertiary-service">
+                        <div class="service-icon-container">
+                            <i class="fas fa-calendar-check service-icon"></i>
+                            <div class="icon-glow"></div>
+                        </div>
+                        <div class="service-content">
+                            <h4 class="service-title">Local Events & Announcements</h4>
+                            <p class="service-description">Stay updated with community events, municipal announcements, and local government meetings.</p>
+                            <div class="service-features">
+                                <span class="feature-badge"><i class="fas fa-bell me-1"></i> Event Alerts</span>
+                                <span class="feature-badge"><i class="fas fa-calendar-alt me-1"></i> Event Calendar</span>
+                                <span class="feature-badge"><i class="fas fa-megaphone me-1"></i> Announcements</span>
+                            </div>
+                            <div class="service-action">
+                                <span class="action-text">View Events</span>
+                                <i class="fas fa-arrow-right action-arrow"></i>
+                            </div>
+                        </div>
+                        <div class="service-pattern"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Coming Soon Services Grid -->
+        <div class="row g-4 mt-4">
+            <div class="col-md-6">
+                <div class="service-card-coming-soon">
+                    <div class="coming-soon-badge">Coming Soon</div>
+                    <div class="service-icon-container">
+                        <i class="fas fa-search service-icon"></i>
+                    </div>
+                    <h5 class="service-title">Service Request Tracking</h5>
+                    <p class="service-description">Advanced tracking system to monitor the status and progress of your submitted service requests.</p>
+                    <div class="progress-indicator">
+                        <div class="progress-bar" style="width: 60%"></div>
+                    </div>
+                    <small class="text-muted">Development Progress: 60%</small>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="service-card-coming-soon">
+                    <div class="coming-soon-badge">Coming Soon</div>
+                    <div class="service-icon-container">
+                        <i class="fas fa-mobile-alt service-icon"></i>
+                    </div>
+                    <h5 class="service-title">Mobile Application</h5>
+                    <p class="service-description">Native mobile app for iOS and Android with offline reporting capabilities and push notifications.</p>
+                    <div class="progress-indicator">
+                        <div class="progress-bar" style="width: 40%"></div>
+                    </div>
+                    <small class="text-muted">Development Progress: 40%</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- USER ENGAGEMENT SECTION - Only for logged in users -->
+@if (Context.Session.GetInt32("UserId").HasValue && engagementStats != null)
+{
+    <div class="engagement-section">
+        <div class="container">
+            <div class="engagement-card">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <div class="engagement-content">
+                            <div class="engagement-header">
+                                <div class="user-avatar">
+                                    <i class="fas fa-user-circle"></i>
+                                </div>
+                                <div class="user-info">
+                                    <h3 class="user-name">@(Context.Session.GetString("UserName") ?? "Community Member")</h3>
+                                    <span class="user-level">@engagementStats.CurrentLevel</span>
+                                </div>
+                            </div>
+                            <p class="engagement-message">@engagementStats.MotivationalMessage</p>
+
+                            <!-- Enhanced Progress Bar -->
+                            <div class="progress-section">
+                                <div class="progress-header">
+                                    <span class="progress-label">Progress to @engagementStats.NextLevel</span>
+                                    <span class="progress-percentage">@engagementStats.CompletionPercentage%</span>
+                                </div>
+                                <div class="progress-container">
+                                    <div class="progress-track">
+                                        <div class="progress-fill" style="width: @(engagementStats.CompletionPercentage)%"></div>
+                                        <div class="progress-glow" style="width: @(engagementStats.CompletionPercentage)%"></div>
+                                    </div>
+                                </div>
+                                @if (engagementStats.PointsToNextLevel > 0)
+                                {
+                                    <small class="progress-hint">@engagementStats.PointsToNextLevel more report(s) to reach the next level!</small>
+                                }
+                                else
+                                {
+                                    <small class="progress-hint"><i class="fas fa-star me-1"></i> You've reached an amazing level! Keep making a difference!</small>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 text-center">
+                        <div class="engagement-stats-visual">
+                            <div class="stats-circle">
+                                <div class="stats-number">@engagementStats.ReportsSubmitted</div>
+                                <div class="stats-label">Reports<br>Submitted</div>
+                            </div>
+                            <div class="stats-message">Keep up the great work<br>@(Context.Session.GetString("UserName") ?? "Community Member")!</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Achievements Section -->
+                @if (engagementStats.Achievements.Any())
+                {
+                    <div class="achievements-section">
+                        <h6 class="achievements-title"><i class="fas fa-medal me-2"></i>@(Context.Session.GetString("UserName") ?? "Your") Achievements</h6>
+                        <div class="achievements-grid">
+                            @foreach (var achievement in engagementStats.Achievements)
+                            {
+                                <div class="achievement-badge-premium">
+                                    <i class="fas fa-award achievement-icon"></i>
+                                    <span class="achievement-text">@achievement</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+
+                <!-- Call to Action -->
+                <div class="engagement-action">
+                    <a asp-controller="ServiceRequest" asp-action="ReportIssue" class="btn-engagement">
+                        <i class="fas fa-plus me-2"></i>@(engagementStats.ReportsSubmitted < 3 ? "Submit Another Report & Level Up!" : "Continue Making a Difference!")
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Welcome Message for Non-Logged In Users -->
+@if (!Context.Session.GetInt32("UserId").HasValue)
+{
+    <div class="engagement-section">
+        <div class="container">
+            <div class="engagement-card">
+                <div class="text-center">
+                    <h3 class="mb-3">Welcome to Municipal Services Portal</h3>
+                    <p class="lead mb-4">Join our community to track your progress, earn achievements, and make a lasting impact on your neighborhood.</p>
+                    <div class="row justify-content-center">
+                        <div class="col-md-6">
+                            <a asp-controller="Auth" asp-action="Login" class="btn btn-primary btn-lg me-3">
+                                <i class="fas fa-sign-in-alt me-2"></i>Login
+                            </a>
+                            <a asp-controller="Auth" asp-action="Register" class="btn btn-outline-primary btn-lg">
+                                <i class="fas fa-user-plus me-2"></i>Create Account
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- ENHANCED STATISTICS DASHBOARD -->
+@if (stats != null)
+{
+    <div class="statistics-section">
+        <div class="container">
+            <div class="section-header text-center mb-5">
+                <h2 class="section-title">Community Impact Dashboard</h2>
+                <p class="section-subtitle">Real-time statistics of our municipal services</p>
+                <div class="title-divider"></div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-3 col-sm-6">
+                    <div class="stat-card stat-primary">
+                        <div class="stat-icon">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-number" data-count="@stats.TotalReports">0</div>
+                            <div class="stat-label">Total Reports</div>
+                            <div class="stat-change">
+                                <i class="fas fa-arrow-up"></i> +@(stats.TotalReports > 0 ? Math.Max(1, stats.TotalReports / 4) : 0) this month
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-sm-6">
+                    <div class="stat-card stat-warning">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-number" data-count="@stats.PendingReports">0</div>
+                            <div class="stat-label">Pending</div>
+                            <div class="stat-change">
+                                <i class="fas fa-tools"></i> In progress
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-sm-6">
+                    <div class="stat-card stat-success">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-number" data-count="@stats.ResolvedReports">0</div>
+                            <div class="stat-label">Resolved</div>
+                            <div class="stat-change">
+                                <i class="fas fa-thumbs-up"></i> Completed
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-sm-6">
+                    <div class="stat-card stat-danger">
+                        <div class="stat-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-number" data-count="@stats.HighPriorityReports">0</div>
+                            <div class="stat-label">High Priority</div>
+                            <div class="stat-change">
+                                <i class="fas fa-bolt"></i> Urgent
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- RECENT REPORTS SECTION - Enhanced -->
+@if (recentReports != null && recentReports.Any())
+{
+    <div class="recent-reports-section">
+        <div class="container">
+            <div class="section-header mb-4">
+                <h3 class="section-title">
+                    <i class="fas fa-clock me-2"></i>Recent Community Reports
+                </h3>
+                <a asp-controller="ServiceRequest" asp-action="ViewReports" class="btn btn-outline-primary">
+                    View All Reports <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+            </div>
+
+            <div class="reports-timeline">
+                @foreach (var report in recentReports)
+                {
+                    <div class="timeline-item priority-@(report.Priority >= 4 ? "high" : report.Priority >= 3 ? "medium" : "low")">
+                        <div class="timeline-marker">
+                            <i class="fas fa-@(report.Priority >= 4 ? "exclamation-circle" : report.Priority >= 3 ? "info-circle" : "check-circle")"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-header">
+                                <h6 class="report-title">@report.Category - @report.Location</h6>
+                                <span class="report-badge priority-@(report.Priority >= 4 ? "high" : report.Priority >= 3 ? "medium" : "low")">
+                                    @report.Status
+                                </span>
+                            </div>
+                            <p class="report-description">
+                                @report.Description.Substring(0, Math.Min(120, report.Description.Length))@(report.Description.Length > 120 ? "..." : "")
+                            </p>
+                            <div class="report-meta">
+                                <span class="report-time">
+                                    <i class="fas fa-clock me-1"></i>
+                                    @report.DateReported.ToString("MMM dd, yyyy HH:mm")
+                                </span>
+                                @if (report.AttachedFiles.Any())
+                                {
+                                    <span class="report-files">
+                                        <i class="fas fa-paperclip me-1"></i>
+                                        @report.AttachedFiles.Count file(s)
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+<style>
+    .tertiary-service {
+        background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+        color: white;
+    }
+
+        .tertiary-service .service-icon {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .tertiary-service .service-action {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+            .tertiary-service .service-action:hover {
+                background: rgba(255, 255, 255, 0.2);
+            }
+
+        .tertiary-service .feature-badge {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+</style>
+
+@section Scripts {
+    <script>
+        // Set flag for celebration if needed
+        @if (TempData["ShowCelebration"] != null)
+        {
+                    <text>window.showCelebration = true;</text>
+        }
+        else
+        {
+                    <text>window.showCelebration = false;</text>
+        }
+    </script>
+    <script src="~/js/pages/home.js" asp-append-version="true"></script>
+}

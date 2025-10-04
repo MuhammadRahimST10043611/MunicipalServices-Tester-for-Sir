@@ -1,0 +1,653 @@
+﻿@model MunicipalServices.Models.AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<!-- Admin Header -->
+<div class="admin-header mb-4">
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <h1 class="admin-title">
+                <i class="fas fa-tachometer-alt me-3"></i>
+                Admin Dashboard
+            </h1>
+            <p class="admin-subtitle">
+                Municipal Services Administration Panel
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Stats Cards -->
+<div class="row g-4 mb-5">
+    <div class="col-lg-3 col-md-6">
+        <div class="stat-card stat-primary">
+            <div class="stat-icon">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">
+                    @{
+                        var totalEvents = 0;
+                        if (Model.EventStatistics.TryGetValue("Total", out var events))
+                        {
+                            totalEvents = events;
+                        }
+                    }
+                    @totalEvents
+                </div>
+                <div class="stat-label">Total Events</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="stat-card stat-success">
+            <div class="stat-icon">
+                <i class="fas fa-clipboard-list"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">@Model.ServiceRequestStats.TotalReports</div>
+                <div class="stat-label">Service Requests</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="stat-card stat-warning">
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">@Model.TotalUsers</div>
+                <div class="stat-label">Registered Users</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="stat-card stat-info">
+            <div class="stat-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">@Model.ServiceRequestStats.PendingReports</div>
+                <div class="stat-label">Pending Issues</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="quick-actions mb-5">
+    <h3 class="section-title">
+        <i class="fas fa-bolt me-2"></i>Quick Actions
+    </h3>
+    <div class="row g-3">
+        <div class="col-md-4">
+            <a asp-action="CreateEvent" class="action-card text-decoration-none">
+                <div class="action-icon">
+                    <i class="fas fa-plus-circle"></i>
+                </div>
+                <div class="action-content">
+                    <h5>Create New Event</h5>
+                    <p>Add a new local event or announcement</p>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a asp-action="Events" class="action-card text-decoration-none">
+                <div class="action-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="action-content">
+                    <h5>Manage Events</h5>
+                    <p>Edit existing events</p>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a asp-action="ServiceRequests" class="action-card text-decoration-none">
+                <div class="action-icon">
+                    <i class="fas fa-tasks"></i>
+                </div>
+                <div class="action-content">
+                    <h5>Service Requests</h5>
+                    <p>Review and update service request status</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="row g-4">
+    <!-- Recent Events -->
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-calendar me-2"></i>
+                    Recent Events
+                </h5>
+            </div>
+            <div class="card-body">
+                @if (Model.RecentEvents.Any())
+                {
+                    @foreach (var eventItem in Model.RecentEvents.Take(5))
+                    {
+                        <div class="recent-item">
+                            <div class="recent-item-header">
+                                <h6 class="recent-item-title">@eventItem.Title</h6>
+                                <span class="badge bg-primary">@eventItem.Category</span>
+                            </div>
+                            <div class="recent-item-meta">
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar me-1"></i>
+                                    @eventItem.EventDate.ToString("MMM dd, yyyy")
+                                </small>
+                                <small class="text-muted">
+                                    <i class="fas fa-eye me-1"></i>
+                                    @eventItem.ViewCount views
+                                </small>
+                            </div>
+                            <div class="recent-item-actions">
+                                <a asp-action="EditEvent" asp-route-id="@eventItem.Id"
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="text-center mt-3">
+                        <a asp-action="Events" class="btn btn-primary">
+                            <i class="fas fa-list me-2"></i>View All Events
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-3">
+                        <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No events yet.</p>
+                        <a asp-action="CreateEvent" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Create First Event
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Service Requests -->
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-clipboard-list me-2"></i>
+                    Recent Service Requests
+                </h5>
+            </div>
+            <div class="card-body">
+                @if (Model.RecentServiceRequests.Any())
+                {
+                    @foreach (var request in Model.RecentServiceRequests.Take(5))
+                    {
+                        <div class="recent-item">
+                            <div class="recent-item-header">
+                                <h6 class="recent-item-title">@request.Category</h6>
+                                <span class="badge @(request.Status == "Submitted" ? "bg-warning" :
+                                    request.Status == "In Progress" ? "bg-info" : "bg-success")">
+                                    @request.Status
+                                </span>
+                            </div>
+                            <div class="recent-item-content">
+                                <p class="mb-1">@request.Location</p>
+                                <small class="text-muted">
+                                    @(request.Description.Length > 50 ?
+                                    request.Description.Substring(0, 50) + "..." :
+                                    request.Description)
+                                </small>
+                            </div>
+                            <div class="recent-item-meta">
+                                <small class="text-muted">
+                                    <i class="fas fa-clock me-1"></i>
+                                    @request.DateReported.ToString("MMM dd, yyyy")
+                                </small>
+                                <small class="text-muted">
+                                    <i class="fas fa-hashtag me-1"></i>
+                                    #@request.Id
+                                </small>
+                            </div>
+                            <div class="recent-item-actions">
+                                <a asp-action="ServiceRequests" asp-route-id="@request.Id"
+                                   class="btn btn-sm btn-outline-success">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </div>
+                        </div>
+                }
+
+                    <div class="text-center mt-3">
+                        <a asp-action="ServiceRequests" class="btn btn-success">
+                            <i class="fas fa-list me-2"></i>View All Requests
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-3">
+                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No service requests yet.</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- System Status Section -->
+<div class="row g-4 mt-4">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-bar me-2"></i>
+                    System Overview
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="text-center p-3 bg-light rounded">
+                            <i class="fas fa-calendar-check fa-2x text-primary mb-2"></i>
+                            <div class="h4 mb-1">
+                                @{
+                                    var upcomingEvents = 0;
+                                    if (Model.EventStatistics.TryGetValue("Upcoming", out var upcoming))
+                                    {
+                                        upcomingEvents = upcoming;
+                                    }
+                                }
+                                @upcomingEvents
+                            </div>
+                            <small class="text-muted">Upcoming Events</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center p-3 bg-light rounded">
+                            <i class="fas fa-exclamation-triangle fa-2x text-warning mb-2"></i>
+                            <div class="h4 mb-1">@Model.ServiceRequestStats.HighPriorityReports</div>
+                            <small class="text-muted">High Priority Issues</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center p-3 bg-light rounded">
+                            <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                            <div class="h4 mb-1">@Model.ServiceRequestStats.ResolvedReports</div>
+                            <small class="text-muted">Resolved This Month</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-cog me-2"></i>
+                    System Status
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="status-indicator bg-success me-3"></div>
+                    <div>
+                        <div class="fw-bold">Database</div>
+                        <small class="text-muted">Operational</small>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center mb-3">
+                    <div class="status-indicator bg-success me-3"></div>
+                    <div>
+                        <div class="fw-bold">File Uploads</div>
+                        <small class="text-muted">Working</small>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center">
+                    <div class="status-indicator bg-success me-3"></div>
+                    <div>
+                        <div class="fw-bold">Email Service</div>
+                        <small class="text-muted">Active</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .admin-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+    }
+
+    .admin-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .admin-subtitle {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin-bottom: 0;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0,0,0,0.05);
+        overflow: hidden;
+        position: relative;
+        height: 100%;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+    .stat-primary {
+        --gradient: linear-gradient(90deg, #4299e1 0%, #3182ce 100%);
+    }
+
+        .stat-primary .stat-icon {
+            color: #4299e1;
+        }
+
+    .stat-success {
+        --gradient: linear-gradient(90deg, #48bb78 0%, #38a169 100%);
+    }
+
+        .stat-success .stat-icon {
+            color: #48bb78;
+        }
+
+    .stat-warning {
+        --gradient: linear-gradient(90deg, #f6ad55 0%, #d69e2e 100%);
+    }
+
+        .stat-warning .stat-icon {
+            color: #f6ad55;
+        }
+
+    .stat-info {
+        --gradient: linear-gradient(90deg, #4fd1c7 0%, #38b2ac 100%);
+    }
+
+        .stat-info .stat-icon {
+            color: #4fd1c7;
+        }
+
+    .stat-icon {
+        font-size: 3rem;
+        opacity: 0.8;
+        margin-bottom: 1rem;
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #2d3748;
+        line-height: 1;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        font-size: 1rem;
+        color: #718096;
+        font-weight: 500;
+    }
+
+    .action-card {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0,0,0,0.05);
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        color: inherit;
+        height: 100%;
+    }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+            color: inherit;
+            text-decoration: none;
+        }
+
+    .action-icon {
+        font-size: 2.5rem;
+        color: #667eea;
+        flex-shrink: 0;
+    }
+
+    .action-content h5 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 0.5rem;
+    }
+
+    .action-content p {
+        color: #718096;
+        margin-bottom: 0;
+        font-size: 0.9rem;
+    }
+
+    /* Fixed Recent Items Layout */
+    .recent-item {
+        padding: 1.25rem;
+        border-bottom: 1px solid #e2e8f0;
+        position: relative;
+        padding-right: 5rem; /* Add space for actions */
+    }
+
+        .recent-item:last-child {
+            border-bottom: none;
+        }
+
+    .recent-item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 0.5rem;
+        gap: 1rem;
+    }
+
+    .recent-item-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 0;
+        flex: 1;
+    }
+
+    .recent-item-content {
+        margin-bottom: 0.75rem;
+        padding-right: 1rem;
+    }
+
+        .recent-item-content p {
+            font-size: 0.9rem;
+            color: #4a5568;
+            margin-bottom: 0.25rem;
+        }
+
+    .recent-item-meta {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 0;
+    }
+
+        .recent-item-meta small {
+            font-size: 0.8rem;
+            color: #a0aec0;
+        }
+
+    /* Fixed Action Buttons */
+    .recent-item-actions {
+        position: absolute;
+        top: 1.25rem;
+        right: 1.25rem;
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+        .recent-item-actions .btn {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+            line-height: 1;
+            border-radius: 0.375rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 2.5rem;
+            height: 2.5rem;
+        }
+
+            .recent-item-actions .btn i {
+                font-size: 0.875rem;
+            }
+
+    /* Badge positioning fix */
+    .recent-item-header .badge {
+        flex-shrink: 0;
+        margin-left: auto;
+        margin-right: 4rem; /* Space for action buttons */
+    }
+
+    .section-title {
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 1.5rem;
+    }
+
+    .status-indicator {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    /* Card improvements */
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        border-radius: 0;
+        font-weight: 600;
+    }
+
+    .card-body {
+        padding: 0;
+    }
+
+    /* Mobile Responsive */
+    @@media (max-width: 768px) {
+        .admin-header
+
+    {
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .admin-title {
+        font-size: 2rem;
+    }
+
+    .stat-card {
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+    }
+
+    .action-card {
+        padding: 1.5rem;
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+
+    .action-icon {
+        font-size: 2rem;
+    }
+
+    /* Mobile adjustments for recent items */
+    .recent-item {
+        padding: 1rem;
+        padding-right: 1rem;
+    }
+
+    .recent-item-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+        .recent-item-header .badge {
+            margin-right: 0;
+            align-self: flex-start;
+        }
+
+    .recent-item-actions {
+        position: static;
+        margin-top: 0.75rem;
+        justify-content: flex-start;
+    }
+
+    .recent-item-meta {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    }
+</style>
+
+@section Scripts {
+    <script src="~/js/pages/admin-dashboard.js" asp-append-version="true"></script>
+}

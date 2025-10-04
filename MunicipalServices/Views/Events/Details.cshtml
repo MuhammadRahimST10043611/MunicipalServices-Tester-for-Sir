@@ -1,0 +1,435 @@
+﻿@model MunicipalServices.Models.LocalEvent
+@{
+    ViewData["Title"] = $"Event Details - {Model.Title}";
+}
+
+<div class="event-details-container">
+    <!-- Header Section -->
+    <div class="event-details-header mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h1 class="hero-title mb-2">
+                    <i class="fas fa-calendar-alt me-2"></i>
+                    Event Details
+                </h1>
+                <div class="d-flex align-items-center gap-3 flex-wrap">
+                    <span class="badge bg-primary fs-6 px-3 py-2">
+                        <i class="fas fa-tag me-1"></i>
+                        @Model.Category
+                    </span>
+                    <span class="badge @(Model.Priority >= 4 ? "bg-danger" : Model.Priority >= 3 ? "bg-warning text-dark" : "bg-success") fs-6 px-3 py-2">
+                        <i class="fas fa-@(Model.Priority >= 4 ? "exclamation-triangle" : Model.Priority >= 3 ? "info-circle" : "check-circle") me-1"></i>
+                        @(Model.Priority >= 4 ? "High" : Model.Priority >= 3 ? "Medium" : "Low") Priority
+                    </span>
+                    @if (Model.EventDate < DateTime.Now)
+                    {
+                        <span class="badge bg-secondary fs-6 px-3 py-2">
+                            <i class="fas fa-history me-1"></i>Past Event
+                        </span>
+                    }
+                    else if (Model.EventDate <= DateTime.Now.AddDays(7))
+                    {
+                        <span class="badge bg-warning text-dark fs-6 px-3 py-2">
+                            <i class="fas fa-bolt me-1"></i>This Week
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-info fs-6 px-3 py-2">
+                            <i class="fas fa-calendar-check me-1"></i>Upcoming
+                        </span>
+                    }
+                </div>
+            </div>
+            <div class="action-buttons">
+                <a asp-controller="Events" asp-action="Index" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Events
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Main Event Information -->
+        <div class="col-lg-8">
+            <!-- Event Overview Card -->
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0 h4">
+                        <i class="fas fa-info-circle me-2"></i>
+                        @Model.Title
+                    </h2>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <label class="info-label">
+                                    <i class="fas fa-calendar me-2 text-primary"></i>Event Date & Time
+                                </label>
+                                <div class="info-value">
+                                    <div class="d-flex align-items-center">
+                                        <div class="event-date-large me-3">
+                                            <div class="day">@Model.EventDate.Day</div>
+                                            <div class="month">@Model.EventDate.ToString("MMM")</div>
+                                            <div class="year">@Model.EventDate.Year</div>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold">@Model.EventDate.ToString("dddd, MMMM dd, yyyy")</div>
+                                            <div class="text-muted">@Model.EventDate.ToString("h:mm tt")</div>
+                                            @if (Model.EventDate > DateTime.Now)
+                                            {
+                                                var timeUntil = Model.EventDate - DateTime.Now;
+                                                <small class="text-success">
+                                                    <i class="fas fa-clock me-1"></i>
+                                                    @if (timeUntil.Days > 0)
+                                                    {
+                                                        <text>@timeUntil.Days day@(timeUntil.Days != 1 ? "s" : "") to go</text>
+                                                    }
+                                                    else if (timeUntil.Hours > 0)
+                                                    {
+                                                        <text>@timeUntil.Hours hour@(timeUntil.Hours != 1 ? "s" : "") to go</text>
+                                                    }
+                                                    else
+                                                    {
+                                                        <text>Less than an hour to go!</text>
+                                                    }
+                                                </small>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @if (!string.IsNullOrEmpty(Model.Location))
+                        {
+                            <div class="col-md-6">
+                                <div class="info-item">
+                                    <label class="info-label">
+                                        <i class="fas fa-map-marker-alt me-2 text-danger"></i>Location
+                                    </label>
+                                    <div class="info-value location-text">
+                                        @Model.Location
+                                        <div class="mt-2">
+                                            <a href="https://www.google.com/maps/search/?api=1&query=@Uri.EscapeDataString(Model.Location)"
+                                               target="_blank" class="btn btn-sm btn-outline-danger">
+                                                <i class="fas fa-map me-1"></i>View on Map
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Event Description Card -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-align-left me-2"></i>
+                        Event Description
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="description-content">
+                        @Model.Description
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Information Card -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Additional Information
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="text-center p-3 bg-light rounded">
+                                <i class="fas fa-eye fa-2x text-primary mb-2"></i>
+                                <div class="h5 mb-1">@Model.ViewCount</div>
+                                <small class="text-muted">Views</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center p-3 bg-light rounded">
+                                <i class="fas fa-star fa-2x text-warning mb-2"></i>
+                                <div class="h5 mb-1">@Model.Priority</div>
+                                <small class="text-muted">Priority Level</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center p-3 bg-light rounded">
+                                <i class="fas fa-calendar-plus fa-2x text-success mb-2"></i>
+                                <div class="h6 mb-1">@Model.CreatedAt.ToString("MMM dd")</div>
+                                <small class="text-muted">Published</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Information -->
+        <div class="col-lg-4">
+            <!-- Quick Actions Card -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-bolt me-2"></i>
+                        Quick Actions
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        @if (!string.IsNullOrEmpty(Model.Location))
+                        {
+                            <a href="https://www.google.com/maps/search/?api=1&query=@Uri.EscapeDataString(Model.Location)"
+                               target="_blank" class="btn btn-outline-danger">
+                                <i class="fas fa-map-marked-alt me-2"></i>Get Directions
+                            </a>
+                        }
+                        <a href="mailto:?subject=@Uri.EscapeDataString($"Event: {Model.Title}")&body=@Uri.EscapeDataString($"Check out this event: {Model.Title} on {Model.EventDate:MMMM dd, yyyy}. {Model.Description}")"
+                           class="btn btn-outline-success">
+                            <i class="fas fa-envelope me-2"></i>Share via Email
+                        </a>
+                        <a asp-controller="Events" asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="fas fa-list me-2"></i>View All Events
+                        </a>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-info">
+                            <i class="fas fa-home me-2"></i>Back to Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Event Status Card -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header @(Model.EventDate > DateTime.Now ? "bg-warning" : "bg-secondary") text-dark">
+                    <h6 class="mb-0">
+                        <i class="fas fa-@(Model.EventDate > DateTime.Now ? "clock" : "history") me-2"></i>
+                        Event Status
+                    </h6>
+                </div>
+                <div class="card-body">
+                    @if (Model.EventDate > DateTime.Now)
+                    {
+                        var timeUntil = Model.EventDate - DateTime.Now;
+                        <div class="text-center">
+                            <i class="fas fa-calendar-check fa-3x text-success mb-3"></i>
+                            <h6 class="text-success">Upcoming Event</h6>
+                            @if (timeUntil.Days > 0)
+                            {
+                                <p class="mb-2"><strong>@timeUntil.Days</strong> day@(timeUntil.Days != 1 ? "s" : "") remaining</p>
+                            }
+                            else if (timeUntil.Hours > 0)
+                            {
+                                <p class="mb-2"><strong>@timeUntil.Hours</strong> hour@(timeUntil.Hours != 1 ? "s" : "") remaining</p>
+                            }
+                            else
+                            {
+                                <p class="mb-2 text-warning"><strong>Starting soon!</strong></p>
+                            }
+                            <small class="text-muted">Mark your calendar</small>
+                        </div>
+                    }
+                    else
+                    {
+                        var timeSince = DateTime.Now - Model.EventDate;
+                        <div class="text-center">
+                            <i class="fas fa-history fa-3x text-muted mb-3"></i>
+                            <h6 class="text-muted">Past Event</h6>
+                            @if (timeSince.Days > 0)
+                            {
+                                <p class="mb-2">Occurred <strong>@timeSince.Days</strong> day@(timeSince.Days != 1 ? "s" : "") ago</p>
+                            }
+                            else if (timeSince.Hours > 0)
+                            {
+                                <p class="mb-2">Occurred <strong>@timeSince.Hours</strong> hour@(timeSince.Hours != 1 ? "s" : "") ago</p>
+                            }
+                            else
+                            {
+                                <p class="mb-2">Occurred recently</p>
+                            }
+                            <small class="text-muted">Thank you for your interest</small>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Related Events Card -->
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-dark text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-calendar-alt me-2"></i>
+                        More Events
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">Discover more community events and announcements</p>
+                    <div class="d-grid gap-2">
+                        <a asp-controller="Events" asp-action="Index" asp-route-category="@Model.Category"
+                           class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-tags me-1"></i>More @Model.Category Events
+                        </a>
+                        <a asp-controller="Events" asp-action="Index" class="btn btn-sm btn-outline-secondary">
+                            <i class="fas fa-calendar-alt me-1"></i>Browse All Events
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Styles -->
+<style>
+    .event-date-large {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 12px;
+        padding: 1rem;
+        text-align: center;
+        min-width: 80px;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+        .event-date-large .day {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1;
+            display: block;
+        }
+
+        .event-date-large .month {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: block;
+        }
+
+        .event-date-large .year {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            display: block;
+        }
+
+    .info-item {
+        margin-bottom: 2rem;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: #4a5568;
+        font-size: 0.9rem;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .info-value {
+        font-size: 1.1rem;
+        color: #2d3748;
+        padding: 0.75rem;
+        background: #f7fafc;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .location-text {
+        font-weight: 500;
+    }
+
+    .description-content {
+        font-size: 1.1rem;
+        line-height: 1.7;
+        color: #2d3748;
+        padding: 1rem;
+        background: #f7fafc;
+        border-radius: 10px;
+        border-left: 4px solid #48bb78;
+        white-space: pre-wrap;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    @@media (max-width: 768px) {
+        .hero-title
+
+    {
+        font-size: 2rem;
+    }
+
+    .event-date-large {
+        min-width: 60px;
+        padding: 0.75rem;
+    }
+
+        .event-date-large .day {
+            font-size: 1.5rem;
+        }
+
+    .info-value {
+        font-size: 1rem;
+    }
+
+    .description-content {
+        font-size: 1rem;
+    }
+
+    }
+</style>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate cards on page load
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+
+                setTimeout(() => {
+                    card.style.transition = 'all 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+
+            // Add hover effects
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                    this.style.boxShadow = '0 15px 35px rgba(0,0,0,0.15)';
+                });
+
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = '';
+                });
+            });
+
+            // Add button hover effects
+            document.querySelectorAll('.btn').forEach(btn => {
+                btn.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                });
+
+                btn.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+}

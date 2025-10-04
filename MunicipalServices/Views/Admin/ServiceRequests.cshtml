@@ -1,0 +1,703 @@
+﻿@model IEnumerable<MunicipalServices.Models.ServiceRequest>
+@{
+    ViewData["Title"] = "Manage Service Requests";
+}
+
+<div class="admin-content-wrapper">
+    <!-- Header Section -->
+    <div class="admin-page-header mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h1 class="admin-title">
+                    <i class="fas fa-clipboard-list me-3 text-success"></i>
+                    Manage Service Requests
+                </h1>
+                <p class="admin-subtitle">
+                    View, manage, and update the status of all community service requests
+                </p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-outline-info me-2" onclick="exportData()">
+                    <i class="fas fa-download me-2"></i>Export Data
+                </button>
+                <a asp-action="Dashboard" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+        <!-- Hidden form for CSRF token -->
+    <form id="tokenForm" style="display:none;">
+        @Html.AntiForgeryToken()
+    </form>
+
+    <!-- Success/Error Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Filter and Search Section -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-3">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">
+                        <i class="fas fa-search me-2"></i>Search Requests
+                    </label>
+                    <input type="text" id="searchInput" class="form-control" 
+                           placeholder="Search by description, location, or ID...">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label fw-bold">
+                        <i class="fas fa-tags me-2"></i>Category
+                    </label>
+                    <select id="categoryFilter" class="form-select">
+                        <option value="">All Categories</option>
+                        <option value="Water & Sewer">Water & Sewer</option>
+                        <option value="Roads & Transportation">Roads & Transportation</option>
+                        <option value="Electricity">Electricity</option>
+                        <option value="Waste Management">Waste Management</option>
+                        <option value="Parks & Recreation">Parks & Recreation</option>
+                        <option value="Public Safety">Public Safety</option>
+                        <option value="Building & Planning">Building & Planning</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label fw-bold">
+                        <i class="fas fa-flag me-2"></i>Status
+                    </label>
+                    <select id="statusFilter" class="form-select">
+                        <option value="">All Status</option>
+                        <option value="Submitted">Submitted</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Resolved">Resolved</option>
+                        <option value="Closed">Closed</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label fw-bold">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Priority
+                    </label>
+                    <select id="priorityFilter" class="form-select">
+                        <option value="">All Priorities</option>
+                        <option value="5">Critical (5)</option>
+                        <option value="4">High (4)</option>
+                        <option value="3">Medium (3)</option>
+                        <option value="2">Low (2)</option>
+                        <option value="1">Very Low (1)</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label fw-bold">
+                        <i class="fas fa-calendar me-2"></i>Date Range
+                    </label>
+                    <select id="dateFilter" class="form-select">
+                        <option value="">All Dates</option>
+                        <option value="today">Today</option>
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                        <option value="older">Older</option>
+                    </select>
+                </div>
+                <div class="col-md-1">
+                    <button type="button" class="btn btn-outline-secondary w-100" onclick="clearFilters()">
+                        <i class="fas fa-times-circle"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="stat-card stat-primary">
+                <div class="stat-icon">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number" id="totalRequests">@Model.Count()</div>
+                    <div class="stat-label">Total Requests</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card stat-warning">
+                <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number" id="pendingRequests">@Model.Count(r => r.Status == "Submitted" || r.Status == "In Progress")</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card stat-success">
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number" id="resolvedRequests">@Model.Count(r => r.Status == "Resolved")</div>
+                    <div class="stat-label">Resolved</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card stat-danger">
+                <div class="stat-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number" id="highPriorityRequests">@Model.Count(r => r.Priority >= 4)</div>
+                    <div class="stat-label">High Priority</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Service Requests List -->
+    @if (Model.Any())
+    {
+        <div class="card border-0 shadow-lg">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-list me-2"></i>
+                    Service Requests (<span id="filteredCount">@Model.Count()</span>)
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0" id="requestsTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="sortable" data-sort="id">
+                                    <i class="fas fa-sort me-1"></i>ID
+                                </th>
+                                <th class="sortable" data-sort="category">
+                                    <i class="fas fa-sort me-1"></i>Category
+                                </th>
+                                <th class="sortable" data-sort="location">
+                                    <i class="fas fa-sort me-1"></i>Location
+                                </th>
+                                <th>Description</th>
+                                <th class="sortable" data-sort="priority">
+                                    <i class="fas fa-sort me-1"></i>Priority
+                                </th>
+                                <th class="sortable" data-sort="status">
+                                    <i class="fas fa-sort me-1"></i>Status
+                                </th>
+                                <th class="sortable" data-sort="date">
+                                    <i class="fas fa-sort me-1"></i>Date
+                                </th>
+                                <th>Files</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var request in Model.OrderByDescending(r => r.DateReported))
+                            {
+                                <tr class="request-row" 
+                                    data-id="@request.Id"
+                                    data-category="@request.Category"
+                                    data-location="@request.Location.ToLower()"
+                                    data-description="@request.Description.ToLower()"
+                                    data-priority="@request.Priority"
+                                    data-status="@request.Status"
+                                    data-date="@request.DateReported.Ticks">
+                                    <td>
+                                        <span class="badge bg-primary fs-6">#@request.Id</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info">@request.Category</span>
+                                    </td>
+                                    <td>
+                                        <div class="location-cell">
+                                            <i class="fas fa-map-marker-alt text-danger me-1"></i>
+                                            <span title="@request.Location">
+                                                @(request.Location.Length > 30 ? request.Location.Substring(0, 30) + "..." : request.Location)
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="description-cell" title="@request.Description">
+                                            @(request.Description.Length > 60 ? request.Description.Substring(0, 60) + "..." : request.Description)
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="priority-display">
+                                            <div class="priority-stars">
+                                                @for (int i = 1; i <= 5; i++)
+                                                {
+                                                    <i class="fas fa-star @(i <= request.Priority ? "text-warning" : "text-muted")" 
+                                                       style="font-size: 0.7rem;"></i>
+                                                }
+                                            </div>
+                                            <small class="d-block mt-1 @(request.Priority >= 4 ? "text-danger" : request.Priority >= 3 ? "text-warning" : "text-success")">
+                                                @(request.Priority >= 4 ? "High" : request.Priority >= 3 ? "Medium" : "Low")
+                                            </small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="status-dropdown">
+                                            <select class="form-select form-select-sm status-select" 
+                                                    data-request-id="@request.Id" 
+                                                    data-original-status="@request.Status">
+                                                <option value="Submitted" selected="@(request.Status == "Submitted")">Submitted</option>
+                                                <option value="In Progress" selected="@(request.Status == "In Progress")">In Progress</option>
+                                                <option value="Resolved" selected="@(request.Status == "Resolved")">Resolved</option>
+                                                <option value="Closed" selected="@(request.Status == "Closed")">Closed</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="date-cell">
+                                            <div class="fw-bold">@request.DateReported.ToString("MMM dd")</div>
+                                            <small class="text-muted">@request.DateReported.ToString("HH:mm")</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @if (request.AttachedFiles.Any())
+                                        {
+                                            <div class="files-indicator" title="@request.AttachedFiles.Count file(s) attached">
+                                                <i class="fas fa-paperclip text-success"></i>
+                                                <span class="badge bg-success">@request.AttachedFiles.Count</span>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center py-5">
+                <i class="fas fa-inbox fa-4x text-muted mb-3"></i>
+                <h4 class="text-muted">No Service Requests</h4>
+                <p class="text-muted mb-0">No service requests have been submitted yet.</p>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Quick View Modal -->
+<div class="modal fade" id="quickViewModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-search-plus me-2"></i>Quick View - Request <span id="quickViewId"></span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="quickViewContent">
+                <div class="text-center py-3">
+                    <i class="fas fa-spinner fa-spin fa-2x"></i>
+                    <p class="mt-2">Loading...</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a id="viewFullDetailsBtn" class="btn btn-primary" target="_blank">
+                    <i class="fas fa-external-link-alt me-2"></i>View Full Details
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .location-cell, .description-cell {
+        max-width: 200px;
+        word-wrap: break-word;
+        font-size: 0.9rem;
+    }
+
+    .priority-stars {
+        white-space: nowrap;
+    }
+
+    .status-select {
+        min-width: 120px;
+        font-size: 0.8rem;
+    }
+
+    .status-select:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    }
+
+    .date-cell {
+        min-width: 80px;
+    }
+
+    .files-indicator {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .sortable {
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .sortable:hover {
+        background-color: #f8f9fa;
+    }
+
+    @@media (max-width: 768px) {
+        .table-responsive {
+            font-size: 0.85rem;
+        }
+        
+        .location-cell, .description-cell {
+            max-width: 150px;
+        }
+    }
+</style>
+
+@section Scripts {
+    <script>
+        // Filter and search functionality
+        function filterRequests() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            const priorityFilter = document.getElementById('priorityFilter').value;
+            const dateFilter = document.getElementById('dateFilter').value;
+
+            const requestRows = document.querySelectorAll('.request-row');
+            let visibleCount = 0;
+
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const weekStart = new Date(today);
+            weekStart.setDate(today.getDate() - today.getDay());
+            const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+            requestRows.forEach(row => {
+                const id = row.getAttribute('data-id');
+                const category = row.getAttribute('data-category');
+                const location = row.getAttribute('data-location');
+                const description = row.getAttribute('data-description');
+                const priority = row.getAttribute('data-priority');
+                const status = row.getAttribute('data-status');
+                const date = new Date(parseInt(row.getAttribute('data-date')));
+
+                let show = true;
+
+                // Search filter
+                if (searchTerm && !id.includes(searchTerm) &&
+                    !category.toLowerCase().includes(searchTerm) &&
+                    !location.includes(searchTerm) &&
+                    !description.includes(searchTerm)) {
+                    show = false;
+                }
+
+                // Category filter
+                if (categoryFilter && category !== categoryFilter) {
+                    show = false;
+                }
+
+                // Status filter
+                if (statusFilter && status !== statusFilter) {
+                    show = false;
+                }
+
+                // Priority filter
+                if (priorityFilter && priority !== priorityFilter) {
+                    show = false;
+                }
+
+                // Date filter
+                if (dateFilter) {
+                    switch(dateFilter) {
+                        case 'today':
+                            if (date < today) show = false;
+                            break;
+                        case 'week':
+                            if (date < weekStart) show = false;
+                            break;
+                        case 'month':
+                            if (date < monthStart) show = false;
+                            break;
+                        case 'older':
+                            if (date >= monthStart) show = false;
+                            break;
+                    }
+                }
+
+                row.style.display = show ? '' : 'none';
+                if (show) visibleCount++;
+            });
+
+            document.getElementById('filteredCount').textContent = visibleCount;
+        }
+
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('priorityFilter').value = '';
+            document.getElementById('dateFilter').value = '';
+            filterRequests();
+        }
+
+        function updateStatus(requestId, newStatus, selectElement) {
+            // Get the CSRF token from the hidden form
+            const token = document.querySelector('#tokenForm input[name="__RequestVerificationToken"]').value;
+
+            // Create form data
+            const formData = new FormData();
+            formData.append('id', requestId);
+            formData.append('status', newStatus);
+            formData.append('__RequestVerificationToken', token);
+
+            // Send update request
+            fetch('@Url.Action("UpdateServiceRequestStatus", "Admin")', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                // Parse JSON response
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Update the row data attribute
+                    const row = selectElement.closest('.request-row');
+                    row.setAttribute('data-status', newStatus);
+
+                    // Show success message
+                    showStatusMessage(data.message || `Request #${requestId} status updated to '${newStatus}'`, 'success');
+
+                    // Update the original status attribute
+                    selectElement.setAttribute('data-original-status', newStatus);
+                } else {
+                    // Revert the select to original value
+                    selectElement.value = selectElement.getAttribute('data-original-status');
+                    showStatusMessage(data.message || 'Failed to update status. Please try again.', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error updating status:', error);
+                // Revert the select to original value
+                selectElement.value = selectElement.getAttribute('data-original-status');
+                showStatusMessage('Failed to update status. Please check your connection and try again.', 'error');
+            });
+        }
+
+        function showStatusMessage(message, type) {
+            const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+            const icon = type === 'success' ? 'check-circle' : 'exclamation-circle';
+
+            const alert = document.createElement('div');
+            alert.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+            alert.style.cssText = 'top: 20px; right: 20px; z-index: 1050; min-width: 300px;';
+            alert.innerHTML = `
+                <i class="fas fa-${icon} me-2"></i>${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+
+            document.body.appendChild(alert);
+
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (alert.parentNode) {
+                    alert.remove();
+                }
+            }, 5000);
+        }
+
+        function showQuickView(requestId) {
+            document.getElementById('quickViewId').textContent = '#' + requestId;
+            document.getElementById('viewFullDetailsBtn').href = '@Url.Action("ServiceRequestDetails", "Admin")/' + requestId;
+
+            const modal = new bootstrap.Modal(document.getElementById('quickViewModal'));
+            modal.show();
+
+            // Find the request data from the table
+            const row = document.querySelector(`.request-row[data-id="${requestId}"]`);
+            if (row) {
+                const category = row.getAttribute('data-category');
+                const location = row.cells[2].textContent.trim();
+                const description = row.getAttribute('data-description');
+                const priority = row.getAttribute('data-priority');
+                const status = row.getAttribute('data-status');
+                const dateText = row.cells[6].textContent.trim();
+
+                const priorityText = priority >= 4 ? 'High' : priority >= 3 ? 'Medium' : 'Low';
+                const priorityClass = priority >= 4 ? 'danger' : priority >= 3 ? 'warning' : 'success';
+
+                const quickViewContent = `
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <strong>Category:</strong>
+                            <span class="badge bg-info ms-2">${category}</span>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Status:</strong>
+                            <span class="badge bg-secondary ms-2">${status}</span>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Priority:</strong>
+                            <span class="badge bg-${priorityClass} ms-2">${priorityText} (${priority})</span>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Date:</strong>
+                            <span class="text-muted ms-2">${dateText}</span>
+                        </div>
+                        <div class="col-12">
+                            <strong>Location:</strong>
+                            <div class="mt-1 p-2 bg-light rounded">${location}</div>
+                        </div>
+                        <div class="col-12">
+                            <strong>Description:</strong>
+                            <div class="mt-1 p-3 bg-light rounded">${description}</div>
+                        </div>
+                    </div>
+                `;
+
+                document.getElementById('quickViewContent').innerHTML = quickViewContent;
+            }
+        }
+
+        function exportData() {
+            // Simple CSV export functionality
+            const rows = Array.from(document.querySelectorAll('.request-row')).filter(row =>
+                row.style.display !== 'none'
+            );
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "ID,Category,Location,Description,Priority,Status,Date\n";
+
+            rows.forEach(row => {
+                const id = row.getAttribute('data-id');
+                const category = row.getAttribute('data-category');
+                const location = row.getAttribute('data-location');
+                const description = row.getAttribute('data-description').replace(/"/g, '""');
+                const priority = row.getAttribute('data-priority');
+                const status = row.getAttribute('data-status');
+                const date = new Date(parseInt(row.getAttribute('data-date'))).toLocaleDateString();
+
+                csvContent += `"${id}","${category}","${location}","${description}","${priority}","${status}","${date}"\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `service_requests_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add event listeners for filtering
+            document.getElementById('searchInput').addEventListener('input', filterRequests);
+            document.getElementById('categoryFilter').addEventListener('change', filterRequests);
+            document.getElementById('statusFilter').addEventListener('change', filterRequests);
+            document.getElementById('priorityFilter').addEventListener('change', filterRequests);
+            document.getElementById('dateFilter').addEventListener('change', filterRequests);
+
+            // Add event listeners for status updates
+            document.querySelectorAll('.status-select').forEach(select => {
+                select.addEventListener('change', function() {
+                    const requestId = this.getAttribute('data-request-id');
+                    const newStatus = this.value;
+                    const originalStatus = this.getAttribute('data-original-status');
+
+                    if (newStatus !== originalStatus) {
+                        if (confirm(`Are you sure you want to change the status of request #${requestId} to '${newStatus}'?`)) {
+                            updateStatus(requestId, newStatus, this);
+                        } else {
+                            this.value = originalStatus;
+                        }
+                    }
+                });
+            });
+
+            // Add sorting functionality
+            document.querySelectorAll('.sortable').forEach(header => {
+                header.addEventListener('click', function() {
+                    const sortBy = this.getAttribute('data-sort');
+                    sortTable(sortBy);
+                });
+            });
+        });
+
+        // Simple table sorting
+        function sortTable(sortBy) {
+            const table = document.getElementById('requestsTable');
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('.request-row'));
+
+            rows.sort((a, b) => {
+                let aVal, bVal;
+
+                switch(sortBy) {
+                    case 'id':
+                        aVal = parseInt(a.getAttribute('data-id'));
+                        bVal = parseInt(b.getAttribute('data-id'));
+                        break;
+                    case 'category':
+                        aVal = a.getAttribute('data-category');
+                        bVal = b.getAttribute('data-category');
+                        break;
+                    case 'location':
+                        aVal = a.getAttribute('data-location');
+                        bVal = b.getAttribute('data-location');
+                        break;
+                    case 'priority':
+                        aVal = parseInt(a.getAttribute('data-priority'));
+                        bVal = parseInt(b.getAttribute('data-priority'));
+                        break;
+                    case 'status':
+                        aVal = a.getAttribute('data-status');
+                        bVal = b.getAttribute('data-status');
+                        break;
+                    case 'date':
+                        aVal = parseInt(a.getAttribute('data-date'));
+                        bVal = parseInt(b.getAttribute('data-date'));
+                        break;
+                    default:
+                        return 0;
+                }
+
+                if (typeof aVal === 'string') {
+                    return aVal.localeCompare(bVal);
+                } else {
+                    return bVal - aVal; // Descending for numbers
+                }
+            });
+
+            // Re-append sorted rows
+            rows.forEach(row => tbody.appendChild(row));
+        }
+    </script>
+}

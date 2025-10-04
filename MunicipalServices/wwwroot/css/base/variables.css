@@ -1,0 +1,134 @@
+:root {
+    /* Colors */
+    --color-primary: #667eea;
+    --color-primary-dark: #764ba2;
+    --color-secondary: #f093fb;
+    --color-secondary-dark: #f5576c;
+    --color-success: #48bb78;
+    --color-success-light: #c6f6d5;
+    --color-warning: #f6ad55;
+    --color-warning-light: #feebc8;
+    --color-danger: #f56565;
+    --color-danger-light: #fed7d7;
+    --color-info: #4299e1;
+    --color-light: #f8fafc;
+    --color-dark: #2d3748;
+    --color-muted: #718096;
+    --color-white: #ffffff;
+    /* Background Colors */
+    --bg-light: #f7fafc;
+    --bg-gray-50: #f8f9fa;
+    --bg-gray-100: #f1f3f4;
+    --bg-gray-200: #e9ecef;
+    /* Text Colors */
+    --text-primary: #2d3748;
+    --text-secondary: #4a5568;
+    --text-muted: #718096;
+    --text-light: #a0aec0;
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+    --spacing-3xl: 4rem;
+    /* Font Sizes */
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-base: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-size-2xl: 1.5rem;
+    --font-size-3xl: 1.875rem;
+    --font-size-4xl: 2.25rem;
+    --font-size-5xl: 3rem;
+    /* Font Weights */
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --font-weight-extrabold: 800;
+    /* Line Heights */
+    --line-height-tight: 1.2;
+    --line-height-normal: 1.5;
+    --line-height-relaxed: 1.6;
+    --line-height-loose: 1.7;
+    /* Shadows */
+    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 10px 30px rgba(0, 0, 0, 0.15);
+    --shadow-2xl: 0 15px 35px rgba(0, 0, 0, 0.15);
+    --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.1);
+    --shadow-primary: 0 5px 15px rgba(102, 126, 234, 0.3);
+    --shadow-success: 0 5px 15px rgba(72, 187, 120, 0.3);
+    /* Border Radius */
+    --border-radius-sm: 0.25rem;
+    --border-radius-md: 0.5rem;
+    --border-radius-lg: 0.75rem;
+    --border-radius-xl: 1rem;
+    --border-radius-2xl: 1.5rem;
+    --border-radius-full: 50%;
+    --border-radius-card: 15px;
+    --border-radius-button: 10px;
+    /* Transitions */
+    --transition-fast: 0.15s ease;
+    --transition-base: 0.3s ease;
+    --transition-slow: 0.5s ease;
+    --transition-all: all 0.3s ease;
+    --transition-transform: transform 0.3s ease;
+    --transition-opacity: opacity 0.3s ease;
+    /* Z-Index */
+    --z-dropdown: 1000;
+    --z-sticky: 1020;
+    --z-fixed: 1030;
+    --z-modal-backdrop: 1040;
+    --z-modal: 1050;
+    --z-popover: 1060;
+    --z-tooltip: 1070;
+    /* Breakpoints (for reference in JS) */
+    --breakpoint-sm: 576px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 992px;
+    --breakpoint-xl: 1200px;
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    --gradient-secondary: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-secondary-dark) 100%);
+    --gradient-success: linear-gradient(135deg, var(--color-success-light) 0%, #9ae6b4 100%);
+    --gradient-warning: linear-gradient(135deg, var(--color-warning-light) 0%, #fed7aa 100%);
+    --gradient-danger: linear-gradient(135deg, var(--color-danger-light) 0%, #feb2b2 100%);
+    --gradient-hero: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    --gradient-card: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    --gradient-light: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    /* Component Specific */
+    --navbar-height: 70px;
+    --sidebar-width: 250px;
+    --container-padding: 30px;
+    --card-padding: 30px;
+    --form-padding: 40px;
+    /* Animation Durations */
+    --animation-fast: 0.2s;
+    --animation-base: 0.3s;
+    --animation-slow: 0.6s;
+    --animation-bounce: 1s;
+    /* File Upload */
+    --file-upload-border: 2px dashed #cbd5e0;
+    --file-upload-bg: #f7fafc;
+    --file-upload-hover-border: var(--color-primary);
+    --file-upload-hover-bg: #edf2f7;
+    --file-upload-drag-border: var(--color-success);
+    --file-upload-drag-bg: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%);
+    /* Progress Bars */
+    --progress-height: 8px;
+    --progress-bg: #e2e8f0;
+    --progress-fill: var(--gradient-primary);
+    /* Status Colors */
+    --status-pending: var(--color-warning);
+    --status-in-progress: var(--color-info);
+    --status-resolved: var(--color-success);
+    --status-high-priority: var(--color-danger);
+    --status-medium-priority: var(--color-warning);
+    --status-low-priority: var(--color-success);
+}
